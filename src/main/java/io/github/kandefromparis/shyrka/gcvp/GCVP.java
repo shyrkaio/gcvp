@@ -65,47 +65,14 @@ public class GCVP {
         robot.scaleDown(config.getNamespace());
     }
 
-    private void displayDeploy() {
-
-//        KubernetesClient client = new DefaultKubernetesClient(config);
-//
-//        String namespace = null;
-//        if (args.length > 0) {
-//            namespace = args[0];
-//        }
-//        if (namespace == null) {
-//            namespace = client.getNamespace();
-//        }
-//        if (namespace == null) {
-//            namespace = "default";
-//        }
-//
-//        String name = "cheese";
-//        try {
-//            Resource<ConfigMap, DoneableConfigMap> configMapResource = client..configMaps().inNamespace(namespace).withName(name);
-//
-//            ConfigMap configMap = configMapResource.createOrReplace(new ConfigMapBuilder().
-//                    withNewMetadata().withName(name).endMetadata().
-//                    addToData("foo", "" + new Date()).
-//                    addToData("bar", "beer").
-//                    build());
-//
-//            log("Upserted ConfigMap at " + configMap.getMetadata().getSelfLink() + " data " + configMap.getData());
-//
-//        } finally {
-//            client.close();
-//        }
-    }
-
     public void scaleDown(String NS) {
 
         if (StringUtils.isBlank(NS)) {
             NS = this.osClient.getNamespace();
         }
-        this.scaleDownKube(NS);
-        //if (this.osClient.apps().supportsApiPath("/oapi/v1")) {
+        this.scaleDownKube(NS);        
         this.scaleDownOcp(NS);
-        //}
+        
 
     }
 
@@ -318,25 +285,24 @@ public class GCVP {
         }
         if (conf.getMetadata().getLabels().containsKey(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel())) {
             Date lastValidation;
+            Date now=Calendar.getInstance().getTime();
             try {
                 lastValidation = DateFormatUtils.ISO_DATE_FORMAT.parse(conf.getMetadata().getLabels().get(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel()));
-
-                Date morethen15Days = DateUtils.addDays(lastValidation, 15);
-                Date morethen30Days = DateUtils.addDays(lastValidation, 35);
-                Date morethen60Days = DateUtils.addDays(lastValidation, 60);
-                Date morethen120Days = DateUtils.addDays(lastValidation, 120);
-                if (lastValidation.before(morethen120Days)) {
+                long difMillis = now.getTime()-lastValidation.getTime();
+                long difDay = difMillis / (60*60*1000*24);
+                
+                if (difDay > 120) {
                     logger.info("conformity issue {} for more then 120 days", PROJECT_CONFIRMATION_EXPIRED.toString());
                     issues.add(PROJECT_CONFIRMATION_EXPIRED);
-                } else if (lastValidation.before(morethen60Days)) {
+                } else if (difDay > 60) {
                     logger.info("conformity issue {} for more then 60 days", PROJECT_CONFIRMATION_EXPIRED.toString());
                     issues.add(PROJECT_CONFIRMATION_EXPIRED);
-                } else if (lastValidation.before(morethen30Days)) {
+                } else if (difDay > 30) {
                     logger.info("conformity issue {} for more then 30 days", PROJECT_CONFIRMATION_EXPIRED.toString());
                     issues.add(PROJECT_CONFIRMATION_EXPIRED);
-                } else if (lastValidation.before(morethen15Days)) {
+                } else if (difDay > 15) {
                     logger.info("conformity issue {} for more then 15 days", PROJECT_CONFIRMATION_EXPIRED.toString());
-                    issues.add(PROJECT_CONFIRMATION_EXPIRED);
+                    //issues.add(PROJECT_CONFIRMATION_EXPIRED);
                 }
             } catch (ParseException ex) {
                 logger.info("conformity issue {} for more then 15 days", PROJECT_CONFIRMATION_EXPIRED.toString());

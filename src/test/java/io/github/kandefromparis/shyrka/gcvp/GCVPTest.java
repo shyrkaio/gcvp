@@ -83,21 +83,21 @@ public class GCVPTest {
     @Before
     public void setUp() {
 
-        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS,"2018-01-01", "true", "dev", 1));
-        ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS,"2018-01-01", "true", "dev", 1));
+        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS, "2018-01-01", "true", "dev", 1));
+        ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, "2018-01-01", "true", "dev", 1));
 
         String pprodDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 1));
 
-        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS,pprodDate, "true", "pprod", 1));
-        ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS,pprodDate, "true", "pprod", 1));
+        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS, pprodDate, "true", "pprod", 1));
+        ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, pprodDate, "true", "pprod", 1));
 
         String prodDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 6));
 
-        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS,prodDate, "true", "prod", 1));
-        ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS,prodDate, "true", "prod", 1));
+        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS, prodDate, "true", "prod", 1));
+        ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, prodDate, "true", "prod", 1));
 
-        
     }
+
     @After
     public void cleanUp() throws IOException {
         this.kbeServer.getMockServer().close();
@@ -105,10 +105,10 @@ public class GCVPTest {
     }
 
     public Deployment getDeploy(String ns, String lEndDate, String lScaleDown, String lStage) {
-        return this.getDeploy(ns,lEndDate, lScaleDown, lStage, 1);
+        return this.getDeploy(ns, lEndDate, lScaleDown, lStage, 1);
     }
 
-    public Deployment getDeploy(String ns,String lEndDate, String lScaleDown, String lStage, Integer replicas) {
+    public Deployment getDeploy(String ns, String lEndDate, String lScaleDown, String lStage, Integer replicas) {
         Map<String, String> labels = getDCLabels(lEndDate, lScaleDown, lStage);
 
         Deployment depDev = new DeploymentBuilder()
@@ -120,7 +120,7 @@ public class GCVPTest {
     }
 
     public DeploymentConfig getDC(String ns, String lEndDate, String lScaleDown, String lStage) {
-        return this.getDC(ns,lEndDate, lScaleDown, lStage, 1);
+        return this.getDC(ns, lEndDate, lScaleDown, lStage, 1);
     }
 
     /**
@@ -197,10 +197,10 @@ public class GCVPTest {
             if (next.getMetadata().getLabels().containsKey(L_PROJECT_STAGE.getlabel())
                     && !next.getMetadata().getLabels().get(L_PROJECT_STAGE.getlabel()).equalsIgnoreCase("prod")
                     && !next.getMetadata().getLabels().get(L_PROJECT_STAGE.getlabel()).equalsIgnoreCase("pprod")) {
-                logger.error(next.getMetadata().getName()+" "+next.toString());
+                logger.error(next.getMetadata().getName() + " " + next.toString());
                 Assert.assertTrue(next.getSpec().getReplicas() < 1);
             } else {
-                logger.error(next.getMetadata().getName()+" "+next.toString());
+                logger.error(next.getMetadata().getName() + " " + next.toString());
                 Assert.assertTrue(next.getSpec().getReplicas() > 0);
             }
         }
@@ -215,7 +215,6 @@ public class GCVPTest {
     @org.junit.Test
     public void testScaleDownDC() throws Exception {
         NamespacedOpenShiftClient client = ocpServer.getOpenshiftClient().inNamespace(NS);
-        
 
         MixedOperation<DeploymentConfig, DeploymentConfigList, DoneableDeploymentConfig, DeployableScalableResource<DeploymentConfig, DoneableDeploymentConfig>> deploymentConfigs = client.deploymentConfigs();
         Iterator<DeploymentConfig> iterator = deploymentConfigs.list().getItems().iterator();
@@ -232,10 +231,10 @@ public class GCVPTest {
             if (next.getMetadata().getLabels().containsKey(L_PROJECT_STAGE.getlabel())
                     && !next.getMetadata().getLabels().get(L_PROJECT_STAGE.getlabel()).equalsIgnoreCase("prod")
                     && !next.getMetadata().getLabels().get(L_PROJECT_STAGE.getlabel()).equalsIgnoreCase("pprod")) {
-                logger.error(next.getMetadata().getName()+" "+next.toString());
+                logger.error(next.getMetadata().getName() + " " + next.toString());
                 Assert.assertTrue(next.getSpec().getReplicas() < 1);
             } else {
-                logger.error(next.getMetadata().getName()+" "+next.toString());
+                logger.error(next.getMetadata().getName() + " " + next.toString());
                 Assert.assertTrue(next.getSpec().getReplicas() > 0);
             }
         }
@@ -259,60 +258,127 @@ public class GCVPTest {
     @org.junit.Test
     public void testNoShyrkaProjectOwner() throws Exception {
 
-        ConfigMap configmap1 = new ConfigMapBuilder().withNewMetadata().withName("configmap1").endMetadata()
-                .addToData("one", "1")
-                .build();
         Map<String, String> labels = new HashMap<>();
         labels.put(L_PROJECT_NAME.getlabel(), "sample");
-        String ackDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), 25));
+        String ackDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), 10));
         labels.put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), ackDate);
 
-        ConfigMap map = new ConfigMapBuilder().withNewMetadata().withName("shyrka").withLabels(labels).endMetadata().build();
-        map.getMetadata().getLabels().put(L_PROJECT_NAME.getlabel(), "sample");
-        //map.getMetadata().getLabels().put(L_PRODUCT_OWNER.getlabel(), "");
-        //map.getMetadata().getAnnotations().put(A_PRODUCT_OWNER.getlabel(), "marie.curie@yopmail.com");
+        ConfigMap map = new ConfigMapBuilder().withNewMetadata().withNamespace(NS).withName("shyrka").withLabels(labels).endMetadata().build();
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).create(map);
 
-        ocpServer.expect().withPath("/api/v1/namespaces/shyrka/configmaps/shyrka").andReturn(200, map).always();
+        GCVP robot = new GCVP(this.ocpServer.getOpenshiftClient().getConfiguration());
 
-        KubernetesClient kubernetesClient = ocpServer.getOpenshiftClient();
-        kubernetesClient.configMaps().inNamespace("shyrka").create(map);
+        List<ConformityIssue> conformityCheck = robot.conformityCheck(NS);
 
-        kubernetesClient.getConfiguration().setNamespace("shyrka");
-        Config configuration = kubernetesClient.getConfiguration();
-        configuration.setNamespace("shyrka");
-        GCVP robot = new GCVP(configuration);
-        List<ConformityIssue> conformityCheck = robot.conformityCheck(this.ocpServer.getOpenshiftClient().getNamespace());
-        MixedOperation<ConfigMap, ConfigMapList, DoneableConfigMap, Resource<ConfigMap, DoneableConfigMap>> configMaps = kubernetesClient.configMaps();
-        Resource<ConfigMap, DoneableConfigMap> withName = configMaps.withName("shyrka");
-
-        ConfigMap get = withName.get();
-
-        //    Assert.assertTrue(conformityCheck.contains(NO_PROJECT_OWNER_LABEL));
-        //    Assert.assertEquals(2, conformityCheck.size());
+        Assert.assertTrue(conformityCheck.contains(NO_PROJECT_OWNER_LABEL));
+        Assert.assertEquals(2, conformityCheck.size());
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).delete();
     }
 
     /**
      * Test of main method, of class GCVP.
      */
     @org.junit.Test
-    public void testShyrkaProjectOwnerConfirmationTooOld() throws Exception {
-        //
+    public void testNoShyrkaProjectOwnerEmail() throws Exception {
+
+        Map<String, String> labels = new HashMap<>();
+        labels.put(L_PROJECT_NAME.getlabel(), "sample");
+        labels.put(L_PRODUCT_OWNER.getlabel(), "john.doe");
+        String ackDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), -39));
+        labels.put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), ackDate);
+
+        //Map<String, String> annotations = new HashMap<>();
+        //annotations.put(A_PRODUCT_OWNER.getlabel(), "john.doe@yopmail.com");
+        ConfigMap map = new ConfigMapBuilder().withNewMetadata().withNamespace(NS).withName("shyrka").withLabels(labels).endMetadata().build();
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).create(map);
+
+        GCVP robot = new GCVP(this.ocpServer.getOpenshiftClient().getConfiguration());
+
+        List<ConformityIssue> conformityCheck = robot.conformityCheck(NS);
+
+        Assert.assertTrue(conformityCheck.contains(NO_PROJECT_OWNER_ANNOTATION));
+        Assert.assertEquals(2, conformityCheck.size());
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).delete();
     }
 
     /**
      * Test of main method, of class GCVP.
      */
     @org.junit.Test
-    public void testScaleDownAllAndSendMail() throws Exception {
-        //
+    public void testNoShyrkaProjectOwnerLastCheck() throws Exception {
+
+        Map<String, String> labels = new HashMap<>();
+        labels.put(L_PROJECT_NAME.getlabel(), "sample");
+        labels.put(L_PRODUCT_OWNER.getlabel(), "john.doe");
+        String ackDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), -65));
+        labels.put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), ackDate);
+
+        Map<String, String> annotations = new HashMap<>();
+        annotations.put(A_PRODUCT_OWNER.getlabel(), "john.doe@yopmail.com");
+
+        ConfigMap map = new ConfigMapBuilder().withNewMetadata().withNamespace(NS).withName("shyrka")
+                .withLabels(labels).withAnnotations(annotations)
+                .endMetadata().build();
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).create(map);
+
+        GCVP robot = new GCVP(this.ocpServer.getOpenshiftClient().getConfiguration());
+
+        List<ConformityIssue> conformityCheck = robot.conformityCheck(NS);
+
+        Assert.assertTrue(conformityCheck.contains(PROJECT_CONFIRMATION_EXPIRED));
+        Assert.assertEquals(1, conformityCheck.size());
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).delete();
     }
 
     /**
      * Test of main method, of class GCVP.
      */
     @org.junit.Test
-    public void testScaleDownAllAndCreateEvent() throws Exception {
-        //
+    public void testNoShyrkaProjectOwnerLastAckWrongFormat() throws Exception {
+
+        Map<String, String> labels = new HashMap<>();
+        labels.put(L_PROJECT_NAME.getlabel(), "sample");
+        labels.put(L_PRODUCT_OWNER.getlabel(), "john.doe");
+        labels.put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), "17-11-11");
+
+        Map<String, String> annotations = new HashMap<>();
+        annotations.put(A_PRODUCT_OWNER.getlabel(), "john.doe@yopmail.com");
+
+        ConfigMap map = new ConfigMapBuilder().withNewMetadata().withNamespace(NS).withName("shyrka")
+                .withLabels(labels).withAnnotations(annotations)
+                .endMetadata().build();
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).create(map);
+
+        GCVP robot = new GCVP(this.ocpServer.getOpenshiftClient().getConfiguration());
+
+        List<ConformityIssue> conformityCheck = robot.conformityCheck(NS);           
+        Assert.assertTrue(conformityCheck.contains(PROJECT_CONFIRMATION_EXPIRED));
+        Assert.assertEquals(1, conformityCheck.size());
+
+        //ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).delete();
+        map.getMetadata().getLabels().put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), "2017-11-05T13:15:30Z");
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).createOrReplace(map);
+
+        conformityCheck = robot.conformityCheck(NS);
+        Assert.assertTrue(conformityCheck.contains(PROJECT_CONFIRMATION_EXPIRED));
+        Assert.assertEquals(1, conformityCheck.size());
+
+        //ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).delete();
+        map.getMetadata().getLabels().put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), "Dec 13, 2017");
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).createOrReplace(map);
+        conformityCheck = robot.conformityCheck(NS);
+        Assert.assertTrue(conformityCheck.contains(PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT_WRONG_FORMAT));
+        Assert.assertEquals(1, conformityCheck.size());
+
+        //ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).delete();
+        map.getMetadata().getLabels().put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), "whatever");
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).createOrReplace(map);
+
+        conformityCheck = robot.conformityCheck(NS);
+        Assert.assertTrue(conformityCheck.contains(PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT_WRONG_FORMAT));
+        Assert.assertEquals(1, conformityCheck.size());
+        ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).delete();
     }
+
 
 }
