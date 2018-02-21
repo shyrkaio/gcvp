@@ -6,9 +6,13 @@
 package io.github.kandefromparis.shyrka.gcvp;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.ConfigMapList;
+import io.fabric8.kubernetes.api.model.DoneableConfigMap;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
+import io.fabric8.kubernetes.client.dsl.NonNamespaceOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
@@ -24,10 +28,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.Level;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,32 +58,90 @@ public class GCVP {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Logger startuplogger = LoggerFactory.getLogger(GCVP.class);
-        startuplogger.info("info");
-        startuplogger.warn("warn");
-        startuplogger.error("error");
 
-        Iterator<String> keys_ = System.getenv().keySet().iterator();
-        while (keys_.hasNext()) {
-            Object key = keys_.next();
-            Object value = System.getenv().get(key.toString());
-            startuplogger.debug(String.valueOf(key) + " " + String.valueOf(value));
+        // create Options object
+        Options options = new Options();
+        options.addOption("s", "scaleDown", false, "This commande will scale down Deployment and DeploymentConfig according to label policy");
+        options.addOption("k", "iskubernetes", false, "This commande will scale down Deployment and DeploymentConfig according to label policy");
+        options.addOption("o", "isOpenshift", false, "This commande will scale down Deployment and DeploymentConfig according to label policy");
+        options.addOption("S", "scaleUP", false, "This commande will scale up Deployment and DeploymentConfig according to label policy [not implemented yet]");
+        options.addOption("c", "check", false, "This commande will display conformity issue");
+        options.addOption("h", "help", false, "This commande will display this message");
+        options.addOption("t", "trigger", true, "This commande use option for trigger, email, webhoock, events [not implemented yet]");
+        options.addOption("l", "logfile", true, "This commande allow to overwrite default logfile]");
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            Config config = new ConfigBuilder().build();
+            GCVP robot = new GCVP(config);
+
+            // parse the command line arguments
+            CommandLine line = parser.parse(options, args);
+            if (line.hasOption("h")) {
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("java $JVM_OPTIONS \\\n" +
+"                                        -cp .:lib \\\n" +
+"                                        -Djava.util.logging.config.file=./conf/logging.properties \\\n" +
+"                                        -jar /opt/${project.artifactId}/${project.artifactId}-${project.version}.jar", options);
+                return;
+            }
+
+            //validation
+            if (line.hasOption("s") && line.hasOption("S")) {
+                System.out.println(" You can not both s and S, choose one");
+                return;
+            }
+            if (line.hasOption("c") && line.hasOption("s")) {
+                System.out.println(" You can not both check and scaledown, choose one");
+                return;
+            }
+            if (line.hasOption("c") && line.hasOption("S")) {
+                System.out.println(" You can not both check and scaleup, choose one");
+                return;
+            }
+            if (line.hasOption("S")) {
+                System.out.println(" Feature not implemented yet");
+                return;
+            }
+
+            if (line.hasOption("s")) {
+                if (line.hasOption("k")) {
+                    robot.scaleDownKube(config.getNamespace());
+                } else if (line.hasOption("o")) {
+                    robot.scaleDownOcp(config.getNamespace());
+                } else {
+                    System.out.println(" You can need to select either o (openshift) or k (kubernetes)");
+                    return;
+                }
+            }
+
+            if (line.hasOption("c")) {
+                List<ConformityIssue> conformityCheck = robot.conformityCheck(config.getNamespace());
+                Iterator<ConformityIssue> iter = conformityCheck.iterator();
+                while (iter.hasNext()) {
+                    ConformityIssue next = iter.next();
+                    System.out.println(next.getErrorCode() + " : " + next.getErrorMessageCode() + " - " + next.getErrorMessage());
+                }
+            }
+
+        } catch (org.apache.commons.cli.ParseException ex) {
+            java.util.logging.Logger.getLogger(GCVP.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Config config = new ConfigBuilder().build();
-        GCVP robot = new GCVP(config);
-        robot.scaleDown(config.getNamespace());
-    }
 
-    public void scaleDown(String NS) {
 
-        if (StringUtils.isBlank(NS)) {
-            NS = this.osClient.getNamespace();
-        }
-        this.scaleDownKube(NS);        
-        this.scaleDownOcp(NS);
-        
 
     }
+    //    public void scaleDown(String NS) {
+    //
+    //        if (StringUtils.isBlank(NS)) {
+    //            NS = this.osClient.getNamespace();
+    //        }
+    //        this.scaleDownKube(NS);
+    //        if (this.osClient.apps().supportsApiPath("/oapi/v1")) {
+    //            this.scaleDownOcp(NS);
+    //        }
+    //
+    //    }
 
     public void scaleDownKube(String NS) {
 
@@ -150,7 +217,7 @@ public class GCVP {
                         this.osClient.deploymentConfigs().inNamespace(next.getMetadata().getNamespace()).createOrReplace(next);
                         return true;
                     } else {
-                        logger.debug("no modification (current ["+DateFormatUtils.ISO_DATE_FORMAT.format(now)+"+]date before " + L_END_DATE.getlabel() + "=" + next.getMetadata().getLabels().get(L_END_DATE.getlabel()) + ") of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
+                        logger.debug("no modification (current [" + DateFormatUtils.ISO_DATE_FORMAT.format(now) + "+]date before " + L_END_DATE.getlabel() + "=" + next.getMetadata().getLabels().get(L_END_DATE.getlabel()) + ") of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
                         return true;
                     }
                 }
@@ -285,12 +352,12 @@ public class GCVP {
         }
         if (conf.getMetadata().getLabels().containsKey(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel())) {
             Date lastValidation;
-            Date now=Calendar.getInstance().getTime();
+            Date now = Calendar.getInstance().getTime();
             try {
                 lastValidation = DateFormatUtils.ISO_DATE_FORMAT.parse(conf.getMetadata().getLabels().get(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel()));
-                long difMillis = now.getTime()-lastValidation.getTime();
-                long difDay = difMillis / (60*60*1000*24);
-                
+                long difMillis = now.getTime() - lastValidation.getTime();
+                long difDay = difMillis / (60 * 60 * 1000 * 24);
+
                 if (difDay > 120) {
                     logger.info("conformity issue {} for more then 120 days", PROJECT_CONFIRMATION_EXPIRED.toString());
                     issues.add(PROJECT_CONFIRMATION_EXPIRED);
