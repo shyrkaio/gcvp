@@ -7,8 +7,6 @@ package io.github.kandefromparis.shyrka.gcvp;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
-import io.fabric8.kubernetes.api.model.ConfigMapList;
-import io.fabric8.kubernetes.api.model.DoneableConfigMap;
 import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.NodeSpec;
 import io.fabric8.kubernetes.api.model.PodBuilder;
@@ -16,10 +14,8 @@ import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.api.model.extensions.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.extensions.DeploymentList;
 import io.fabric8.kubernetes.api.model.extensions.DoneableDeployment;
-import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
-import io.fabric8.kubernetes.client.dsl.Resource;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -190,7 +186,7 @@ public class GCVPTest {
         }
 
         GCVP robot = new GCVP(client.getConfiguration());
-        robot.scaleDown(NS);
+        robot.scaleDownKube(NS);
         iterator = deployments.inNamespace(NS).list().getItems().iterator();
         while (iterator.hasNext()) {
             Deployment next = iterator.next();
@@ -215,7 +211,8 @@ public class GCVPTest {
     @org.junit.Test
     public void testScaleDownDC() throws Exception {
         NamespacedOpenShiftClient client = ocpServer.getOpenshiftClient().inNamespace(NS);
-
+        //ocpServer.expect().withPath("/api/v1/nodes/node1").andReturn(200, new PodBuilder().build()).once();
+        //this.osClient.apps().supportsApiPath("/oapi/v1")
         MixedOperation<DeploymentConfig, DeploymentConfigList, DoneableDeploymentConfig, DeployableScalableResource<DeploymentConfig, DoneableDeploymentConfig>> deploymentConfigs = client.deploymentConfigs();
         Iterator<DeploymentConfig> iterator = deploymentConfigs.list().getItems().iterator();
         while (iterator.hasNext()) {
@@ -224,7 +221,7 @@ public class GCVPTest {
         }
 
         GCVP robot = new GCVP(client.getConfiguration());
-        robot.scaleDown(NS);
+        robot.scaleDownOcp(NS);
         iterator = client.deploymentConfigs().inNamespace(NS).list().getItems().iterator();
         while (iterator.hasNext()) {
             DeploymentConfig next = iterator.next();
