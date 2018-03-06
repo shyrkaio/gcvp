@@ -9,10 +9,8 @@ This project is design to be a cron-job that stop (scale down) dev project.
 Sisyphus validate projet conformity
 3. It will look for configmap with label io.shyrka.sisyphus/start
 
-## Env
 
-
-## Env
+## Build
 
 you need a docker (DOCKER_HOST environment variable) up in order to build the image
 
@@ -42,13 +40,6 @@ We use label on a shirka configmap instead of using info from that config, becau
 | configmap  |  io.shyrka.erebus/product.owner.email                 |                                       |     email           | john.doe@yopmail.com                                  |
 | configmap  |  io.shyrka.erebus/team.watchers                       |   email list for team mate in json    | JSON array of email | {0 : lerappoffi-4267@yopmail.com, 1 :....             |
 | configmap  |  io.shyrka.erebus/contract.ref                        | currently not use                     | URL                 |                                                       |
-
- sample
-      io.shyrka.erebus/product.owner: 
-      : 2017-11-05
-    annotations:
-      : 
-      : "ail.com, 3 : emmoddoddas-4771@yopmail.com}"
 
 
 ### Labels on deploy and dc
