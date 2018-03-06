@@ -6,13 +6,9 @@
 package io.github.kandefromparis.shyrka.gcvp;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.ConfigMapList;
-import io.fabric8.kubernetes.api.model.DoneableConfigMap;
 import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
-import io.fabric8.kubernetes.client.dsl.NonNamespaceOperation;
-import io.fabric8.kubernetes.client.dsl.Resource;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
@@ -21,22 +17,24 @@ import static io.github.kandefromparis.shyrka.ConformityIssue.*;
 import static io.github.kandefromparis.shyrka.ConformityIssue.NO_PROJECT_OWNER_CONFIRMATION;
 import static io.github.kandefromparis.shyrka.ConformityIssue.NO_PROJECT_OWNER_LABEL;
 import static io.github.kandefromparis.shyrka.ConformityIssue.NO_SHYRKA_CONFIGMAP;
+import io.github.kandefromparis.shyrka.DumpProject;
 import static io.github.kandefromparis.shyrka.ShyrkaLabel.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.logging.Level;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.json.JSONException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +67,12 @@ public class GCVP {
         options.addOption("h", "help", false, "This commande will display this message");
         options.addOption("t", "trigger", true, "This commande use option for trigger, email, webhoock, events [not implemented yet]");
         options.addOption("l", "logfile", true, "This commande allow to overwrite default logfile]");
+        options.addOption("d", "dump", true, "This commande dump the targeted ressources dc, deploy, route, svc, ");
+        options.addOption("dir", true, "This commande define the directory to dump the files");
+        options.addOption("git", true, "This commande define the git parameter");
+        options.addOption("gitoken", true, "This commande define the git parameter");
+
+        options.addOption("key", true, "This options define the key to be use to encrypt the base64 fields [data, .dockercfg] of secrets");
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -79,10 +83,10 @@ public class GCVP {
             CommandLine line = parser.parse(options, args);
             if (line.hasOption("h")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("java $JVM_OPTIONS \\\n" +
-"                                        -cp .:lib \\\n" +
-"                                        -Djava.util.logging.config.file=./conf/logging.properties \\\n" +
-"                                        -jar /opt/${project.artifactId}/${project.artifactId}-${project.version}.jar", options);
+                formatter.printHelp("java $JVM_OPTIONS \\\n"
+                        + "                                        -cp .:lib \\\n"
+                        + "                                        -Djava.util.logging.config.file=./conf/logging.properties \\\n"
+                        + "                                        -jar /opt/${project.artifactId}/${project.artifactId}-${project.version}.jar", options);
                 return;
             }
 
@@ -103,7 +107,29 @@ public class GCVP {
                 System.out.println(" Feature not implemented yet");
                 return;
             }
+            if (line.hasOption("key")) {
+                System.out.println(" Feature not implemented yet");
+                return;
+            }
 
+            String dir = line.getOptionValue("dir", System.getProperty("user.dir") + "/yaml-backup");
+            File f = new File(dir);
+            f.mkdirs();
+            if (!f.exists()) {
+                System.out.println(" " + f.getCanonicalPath() + " does not existe");
+                return;
+            }
+            if (!f.isDirectory()) {
+                System.out.println(" " + f.getCanonicalPath() + " is not a directory");
+                return;
+            }
+
+            if (line.hasOption("d")) {
+                String optionValue = line.getOptionValue("d");
+                dumpswitch(optionValue,robot.osClient, config.getNamespace(), f);
+                return;
+
+            }
             if (line.hasOption("s")) {
                 if (line.hasOption("k")) {
                     robot.scaleDownKube(config.getNamespace());
@@ -126,9 +152,9 @@ public class GCVP {
 
         } catch (org.apache.commons.cli.ParseException ex) {
             java.util.logging.Logger.getLogger(GCVP.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(GCVP.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-
 
     }
     //    public void scaleDown(String NS) {
@@ -142,6 +168,55 @@ public class GCVP {
     //        }
     //
     //    }
+
+    protected static void dumpswitch(String optionValue, OpenShiftClient osClient, String nameSpace, File f) {
+        try {
+            DumpProject dumpProject = new DumpProject();
+            
+            switch (optionValue) {
+                case "all":
+                    System.out.println(" Feature not implemented yet");
+                    
+                case "configmap":
+                    System.out.println(dumpProject.dumpConfigmap(osClient, nameSpace,f));
+                    
+                    if(!optionValue.equals("all")){break;};
+                case "deploy":
+                    System.out.println(dumpProject.dumpDeploy(osClient, nameSpace, f));
+                    if(!optionValue.equals("all")){break;};
+                case "secret":
+                    System.out.println(dumpProject.dumpSecret(osClient, nameSpace, f));
+                    if(!optionValue.equals("all")){break;};
+                case "svc":
+                    System.out.println(dumpProject.dumpService(osClient, nameSpace, f));
+                    if(!optionValue.equals("all")){break;};
+                case "endpoints":
+                    System.out.println(" Feature not implemented yet");
+                    if(!optionValue.equals("all")){break;};
+                case "hpa":
+                    System.out.println(" Feature not implemented yet");
+                    if(!optionValue.equals("all")){break;};
+                    //openshift
+                case "bc":
+                    System.out.println(" Feature not implemented yet");
+                    if(!optionValue.equals("all")){break;};
+                case "dc":
+                    System.out.println(" Feature not implemented yet");
+                    if(!optionValue.equals("all")){break;};
+                case "routes":
+                    System.out.println(" Feature not implemented yet");
+                    if(!optionValue.equals("all")){break;};
+                    
+                default:
+                    System.out.println(" Feature not implemented yet");
+                    
+            }
+        } catch (JSONException ex) {
+            java.util.logging.Logger.getLogger(GCVP.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(GCVP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void scaleDownKube(String NS) {
 
@@ -397,5 +472,7 @@ public class GCVP {
         //FilterWatchListDeletable<ConfigMap, ConfigMapList, Boolean, Watch, Watcher<ConfigMap>> withLabelSelector = configMap.withLabelSelector(selector);
         //logger.info("Upserted ConfigMap at " + configMap.getMetadata().getSelfLink() + " data " + configMap.getData());
     }
+
+   
 
 }

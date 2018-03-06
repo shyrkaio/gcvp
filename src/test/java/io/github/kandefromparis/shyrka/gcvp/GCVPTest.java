@@ -108,7 +108,7 @@ public class GCVPTest {
         Map<String, String> labels = getDCLabels(lEndDate, lScaleDown, lStage);
 
         Deployment depDev = new DeploymentBuilder()
-                .withNewMetadata().withNamespace(ns).withName("sample" + lStage)
+                .withNewMetadata().withNamespace(ns).withName("sample-" + lStage)
                 .withLabels(labels).and().withNewSpec()
                 .withReplicas(replicas).endSpec().build();
 
@@ -131,7 +131,7 @@ public class GCVPTest {
         Map<String, String> labels = getDCLabels(lEndDate, lScaleDown, lStage);
 
         DeploymentConfig dcDev = new DeploymentConfigBuilder()
-                .withNewMetadata().withNamespace(ns).withName("sample" + lStage)
+                .withNewMetadata().withNamespace(ns).withName("sample-" + lStage)
                 .withLabels(labels).and().withNewSpec()
                 .withReplicas(replicas).endSpec().build();
 
