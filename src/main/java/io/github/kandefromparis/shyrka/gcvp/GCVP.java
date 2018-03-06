@@ -249,16 +249,6 @@ public class GCVP {
         }
         if (next.getMetadata()
                 .getLabels()
-                .containsKey(L_PROJECT_STAGE.getlabel())
-                && next.getMetadata()
-                        .getLabels()
-                        .get(L_PROJECT_STAGE.getlabel())
-                        .equalsIgnoreCase("prod")) {
-            logger.debug("no modification (DC has " + L_PROJECT_STAGE.getlabel() + "=prod) of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
-            return true;
-        }
-        if (next.getMetadata()
-                .getLabels()
                 .containsKey(L_SCALEDOWN.getlabel())
                 && next.getMetadata()
                         .getLabels()
@@ -319,16 +309,6 @@ public class GCVP {
     private boolean scaleDownDeploy(Deployment next) {
         if (next.getSpec().getReplicas() == 0) {
             logger.debug("no modification (already scaledown) {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
-            return true;
-        }
-        if (next.getMetadata()
-                .getLabels()
-                .containsKey(L_PROJECT_STAGE.getlabel())
-                && next.getMetadata()
-                        .getLabels()
-                        .get(L_PROJECT_STAGE.getlabel())
-                        .equalsIgnoreCase("prod")) {
-            logger.debug("no modification (DC has " + L_PROJECT_STAGE.getlabel() + "=prod) of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
             return true;
         }
         if (next.getMetadata()
