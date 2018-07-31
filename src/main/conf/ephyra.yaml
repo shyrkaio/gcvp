@@ -1,0 +1,8 @@
+# in minutes
+# 60 = 1 hour
+# 1440 = 1 day
+# 10080 = 1 week
+maxDuration: 2
+nbPodsToClean: 1
+
+    
