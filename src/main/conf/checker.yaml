@@ -1,0 +1,47 @@
+apiVersion: erebus.shyrka.io/v1beta1
+kind: ProjectChecker
+metadata:
+    name: sample01
+    labels:
+      io.shyrka.erebus/checker: 0.0.1
+    annotations:
+      io.shyrka.erebus/product.owner.email: john.doe@yopmail.com
+spec:
+    checks:
+      - namespace: test
+        name: imageSourceValidation
+        comment : validate image source
+        ressourceType: deploy
+        labels:
+          io.shyrka.erebus/pjt-stage: test
+          io.shyrka.erebus/stack: foo
+        weight: 10
+        queries:
+          # validate image source
+          - query : "$.spec.containers[0].[?(@.image=='foo.server.org/somevalue/someothervalue:1.2')]"
+            weight: 10
+            expectedResult: "true"
+      - namespace: test
+        name: replicaNumberValidation
+        comment : no
+        ressourceType: deploy
+        labels:
+          io.shyrka.erebus/pjt-stage: test
+          io.shyrka.erebus/stack: foo
+        queries:
+        # validate number of replica instance
+          - query : "$.spec.[?((@.replicas >= 1) && (@.replicas <= 3))]"
+            weight: 10
+            expectedResult: "true"
+      - namespace: test
+        name: envVarValidation
+        comment : Check that containers has an environement variable NAME0 set to VALUE0
+        ressourceType: deploy
+        labels:
+          io.shyrka.erebus/pjt-stage: test
+        weight: 10
+        queries:
+          # validate image source
+          - query : "$.spec.template.spec.containers[*].env[*].[?((@.name == 'NAME0') && (@.value == 'VALUE0'))]"
+            weight: 10
+            expectedResult: "true" 

@@ -1,0 +1,46 @@
+#
+# @Todo define a specific node
+# oc create sa podkiller
+# oc policy add-role-to-user admin system:serviceaccount:$(oc project -q):podkiller
+#
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gcvp-ephyra
+  labels:
+    app: gcvp-ephyra
+    io.shyrka.erebus.tooling-info/role: pod-killer
+spec:
+  parallelism: 1
+  completions: 1
+  backoffLimit: 4
+  template:
+    spec:
+      metadata:
+      name: gcvp-ephyra
+      labels:
+        app: gcvp-ephyra
+      restartPolicy: Never
+      serviceAccount: podkiller
+      containers:
+        - name: gcvp
+          image: 172.30.1.1:5000/infra-anacreon-dev-ags-fr/gcvp:0.0.3
+          imagePullPolicy: Always
+          command: ["java"]
+          args: ["-jar","gcvp-0.0.3.jar","-ephyra","-ephyraNS",$(KUBERNETES_NAMESPACE),"-o", "-ephyraLabels" , $(DEPLOYMENT_LABEL) ]
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace           
+            - name: DEPLOYMENT_LABEL
+              value: 'deploymentconfig=testing'
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: 1000m
+            requests:
+              memory: 100Mi
+              cpu: 250m

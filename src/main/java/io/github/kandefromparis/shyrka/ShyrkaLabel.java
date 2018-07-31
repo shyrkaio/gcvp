@@ -12,9 +12,9 @@ package io.github.kandefromparis.shyrka;
 public enum ShyrkaLabel {
     //this is the stack name 
     L_PROJECT_NAME("io.shyrka.erebus/pjt-name"),
-//this is the stack name 
-    L_STACK_NAME("io.shyrka.erebus/$(stack)"),
-     //this is the stage with this object belong to
+    //this is the stack name 
+    L_STACK_NAME("io.shyrka.erebus/stack"),
+    //this is the stage with this object belong to
     // dev, pprod, prod    
     L_PROJECT_STAGE("io.shyrka.erebus/pjt-stage"),
     //this is the stack version

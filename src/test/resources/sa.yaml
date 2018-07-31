@@ -1,0 +1,69 @@
+# oc new-project sample-shyrka
+# oc policy scc-review -f /Users/csabourdin/Documents/projets/personnel/projets/maven/gcvp/src/test/resources/dc.yaml
+
+apiVersion: v1
+kind: List
+metadata:
+items:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    creationTimestamp: null
+    name: gcvp
+
+- apiVersion: v1
+  kind: Policy
+  metadata:
+    name: default       
+
+- apiVersion: rbac.authorization.k8s.io/v1beta1
+  kind: Role
+  metadata:
+    creationTimestamp: null
+    name: gcvp-role
+  rules:
+  - apiGroups:
+    - ''
+    attributeRestrictions: null
+    resources:
+    - deploymentconfigs.apps.openshift.io
+    - deploymentconfigs.apps.openshift.io/scale
+    - deploymentconfigs
+    - deploymentconfigs/scale
+    verbs:
+    - get
+    - list
+    - patch
+    - update
+  - apiGroups:
+    - ''
+    attributeRestrictions: null
+    resources:
+    - configmaps
+    verbs:
+    - get
+    - list
+    
+  # Remember to adapt namespace to your project
+  # oc policy add-role-to-user gcvp-role -z gcvp --role-namespace='${NAMESPACE}'
+  # replace ${namespace}
+  # debug with oc adm policy who-can list deploymentconfigs
+  
+- apiVersion: v1
+  kind: PolicyBinding
+  policyRef:
+    name: default
+  roleBindings:
+  - name: gcvp-role
+    namespace: sample-shyrka
+    roleBinding:
+      metadata:
+        name: gcvp-role
+        namespace: sample-shyrka
+      roleRef:
+        name: gcvp-role
+        namespace: sample-shyrka
+      subjects:
+      - kind: ServiceAccount
+        name:  gcvp
+        namespace: sample-shyrka  

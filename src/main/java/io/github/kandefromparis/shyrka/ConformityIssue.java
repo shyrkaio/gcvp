@@ -29,7 +29,10 @@ public enum ConformityIssue {
     
     PROJECT_CONFIRMATION_EXPIRED(24, "PROJECT_CONFIRMATION_EXPIRED", "The project has not been confirm for too long " + L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT),
     PROJECT_BACKUP_NOT_SET(22, "PROJECT_CONFIRMATION_EXPIRED", "The project has not been confirm for too long " + L_BACKUP),
-    PROJECT_LAST_BACKUP_TOO_OLD(23, "PROJECT_CONFIRMATION_EXPIRED", "The project has not been confirm for too long " + A_BACKUP_LAST);
+    PROJECT_LAST_BACKUP_TOO_OLD(23, "PROJECT_CONFIRMATION_EXPIRED", "The project has not been confirm for too long " + A_BACKUP_LAST),
+
+    /** the purpose is to check for conformity  to test */
+    PROJECT_NOT_CONFORME_TO_TEST(31, "PROJECT_NOT_CONFORME_TO_TEST", "The project is not conform to the json test");
 
     ConformityIssue(Integer errorCode, String errorMessageCode, String errorMessage) {
         this.errorCode = errorCode;

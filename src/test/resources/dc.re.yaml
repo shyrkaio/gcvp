@@ -1,0 +1,58 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  generation: 2
+  labels:
+    app: cnc
+  name: cnc
+spec:
+  replicas: 1
+  selector:
+    deploymentconfig: cnc
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: cnc
+        deploymentconfig: cnc
+    spec:
+      containers:
+        - image: >-
+            kanedafromparis/nginx@sha256:819b69458ce943afded10de23294d2da388fbab3c93b9c547519404d2944deb4
+          imagePullPolicy: Always
+          name: cnc
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - cnc
+        from:
+          kind: ImageStreamTag
+          name: 'nginx:ocp-0.1'
+      type: ImageChange
+    - type: ConfigChange
+status:

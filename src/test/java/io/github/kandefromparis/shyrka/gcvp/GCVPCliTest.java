@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.mail.*;
@@ -68,11 +68,11 @@ public class GCVPCliTest {
         options.addOption("A", "almost-all", false, "do not list implied . and ..");
         options.addOption("b", "escape", false, "print octal escapes for nongraphic "
                 + "characters");
-        options.addOption(OptionBuilder.withLongOpt("block-size")
-                .withDescription("use SIZE-byte blocks")
+        options.addOption(Option.builder().longOpt("block-size")
+                .desc("use SIZE-byte blocks")
                 .hasArg()
-                .withArgName("SIZE")
-                .create());
+                .argName("SIZE")
+                .build());
         options.addOption("B", "ignore-backups", false, "do not list implied entried "
                 + "ending with ~");
         options.addOption("c", false, "with -lt: sort by, and show, ctime (time of last "
@@ -88,12 +88,12 @@ public class GCVPCliTest {
             // validate that block-size has been set
             Assert.assertTrue(line.hasOption("block-size"));
             Assert.assertEquals("10", line.getOptionValue("block-size"));
-            
+
         } catch (ParseException exp) {
             System.out.println("Unexpected exception:" + exp.getMessage());
         }
     }
-    
+
     @org.junit.Test
     public void testGCVP() throws Exception {
         Options options = new Options();
@@ -103,10 +103,10 @@ public class GCVPCliTest {
         options.addOption("h", "help", false, "This commande will display this message");
         options.addOption("o", "output", true, "This commande use option for output, email, webhoock, events [not implemented yet]");
         options.addOption("l", "logfile", true, "This commande allow to overwrite default logfile]");
-        
+
         CommandLineParser parser = new DefaultParser();
-         try {
-             String[] args = new String[]{"-s","-S","--check","-l simplelogger.properties"};
+        try {
+            String[] args = new String[]{"-s", "-S", "--check", "-l simplelogger.properties"};
             // parse the command line arguments
             CommandLine line = parser.parse(options, args);
 
@@ -116,12 +116,13 @@ public class GCVPCliTest {
             Assert.assertTrue(line.hasOption("l"));
             Assert.assertTrue(line.hasOption("S"));
             Assert.assertEquals("simplelogger.properties", line.getOptionValue("l").trim());
-            
+
         } catch (ParseException exp) {
             System.out.println("Unexpected exception:" + exp.getMessage());
         }
     }
-        /**
+
+    /**
      * Test of main method, of class GCVP.
      */
     @org.junit.Test
@@ -129,15 +130,15 @@ public class GCVPCliTest {
     public void testSendMail() throws Exception {
         // create the command line parser
         CommandLineParser parser = new DefaultParser();
-    Email email = new SimpleEmail();
-		email.setHostName("192.168.99.100");
-                email.setSmtpPort(2525);
-		email.setStartTLSEnabled(true);
-		email.setFrom("user@gmail.com");
-		email.setSubject("Simple email");
-		email.setMsg("This is a simple plain text email :-)");
-		email.addTo("foo@bar.com");
-		email.send();
+        Email email = new SimpleEmail();
+        email.setHostName("192.168.99.100");
+        email.setSmtpPort(2525);
+        email.setStartTLSEnabled(true);
+        email.setFrom("user@gmail.com");
+        email.setSubject("Simple email");
+        email.setMsg("This is a simple plain text email :-)");
+        email.addTo("foo@bar.com");
+        email.send();
     }
 
 }

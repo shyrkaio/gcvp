@@ -1,0 +1,157 @@
+apiVersion: v1
+kind: List
+metadata:
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: sample-shyrka
+  spec:
+    finalizers:
+    - kubernetes
+- apiVersion: v1
+  data:
+    shyrka: "true"
+  kind: ConfigMap
+  metadata:
+    name: shyrka
+    namespace: sample-shyrka
+    labels:
+      io.shyrka.erebus/pjt-name: sample
+      io.shyrka.erebus/product.owner: john.doe
+      io.shyrka.erebus/product.owners.last.acknowledgement: 2017-11-05
+    annotations:
+      io.shyrka.erebus/product.owner.email: john.doe@yopmail.com
+      io.shyrka.erebus/team.watchers: "{0 : lerappoffi-4267@yopmail.com, 1 : opanuvo-6133@yopmail.com, 2 : sonixesommo-4201@yopmail.com, 3 : emmoddoddas-4771@yopmail.com}"
+      io.shyrka.gcvp/component-list: "{}"
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+    generation: 1
+    labels:
+      run: dev
+      io.shyrka.erebus/pjt-stage: dev
+      io.shyrka.gcvp/scaledown: "true"
+      io.shyrka.erebus/end-date: "2018-01-01"
+      io.shyrka.erebus/pjt-name: sample
+    name: dev
+    namespace: sample-shyrka
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        run: dev
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          run: dev
+      spec:
+        containers:
+        - image: kanedafromparis/nginx:0.3
+          imagePullPolicy: IfNotPresent
+          name: dev
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+    generation: 1
+    labels:
+      run: pprod
+      io.shyrka.erebus/pjt-stage: pprod
+      io.shyrka.gcvp/scaledown: "true"
+      io.shyrka.erebus/end-date: "2018-03-01"
+      io.shyrka.erebus/pjt-name: sample
+    name: pprod
+    namespace: sample-shyrka
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        run: pprod
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          run: pprod
+      spec:
+        containers:
+        - image: kanedafromparis/nginx:0.2
+          imagePullPolicy: IfNotPresent
+          name: pprod
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+    labels:
+      run: prod
+      io.shyrka.erebus/pjt-stage: prod
+      io.shyrka.gcvp/scaledown: "false"
+      io.shyrka.erebus/end-date: "2020-01-01"
+      io.shyrka.erebus/pjt-name: sample
+    name: prod
+    namespace: sample-shyrka
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        run: prod
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 1
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          run: prod
+      spec:
+        containers:
+        - image: kanedafromparis/nginx:0.1
+          imagePullPolicy: IfNotPresent
+          name: prod
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30

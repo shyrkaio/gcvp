@@ -39,20 +39,24 @@ We use label on a shirka configmap instead of using info from that config, becau
 |------------|:-----------------------------------------------------:|---------------------------------------|---------------------|------------------------------------------------------:|
 | configmap  |  io.shyrka.erebus/product.owner.email                 |                                       |     email           | john.doe@yopmail.com                                  |
 | configmap  |  io.shyrka.erebus/team.watchers                       |   email list for team mate in json    | JSON array of email | {0 : lerappoffi-4267@yopmail.com, 1 :....             |
-| configmap  |  io.shyrka.erebus/contract.ref                        | currently not use                     | URL                 |                                                       |
+| configmap  |  io.shyrka.erebus/contract.ref                        |   currently not use                   | URL                 |                                                       |
+| configmap  |  io.shyrka.erebus/contract.ref.TYPE                   |   currently not use                   | URL                 |                                                       |
+| configmap  |  io.shyrka.erebus/project-scope:${scope}              |   the scope of the project            | URL                 |                                                       |
+
 
 
 ### Labels on deploy and dc
 
-|  resource  |      Label name (pattern)    | Description     |  Possible values | Example    |
-|------------|:----------------------------:|-----------------|------------------|-----------:|
-| deploy\|dc |  io.shyrka.gcvp/scaledown    |                 |     true/false   |            |
-| deploy\|dc |  io.shyrka.erebus/start-date |   no used       | Date (ISO 8601)  | 2018-01-01 |
-| deploy\|dc |  io.shyrka.erebus/end-date   |   no used       | Date (ISO 8601)  | 2018-01-01 |
-
-
-
-
+|  resource        |      Label name (pattern)                          | Description     |  Possible values                                                     | Example    |
+|------------------|:--------------------------------------------------:|-----------------|----------------------------------------------------------------------|-----------:|
+| deploy\|dc       |  io.shyrka.gcvp/scaledown                          |                 |     true/false                                                       |            |
+| deploy\|dc       |  io.shyrka.erebus/start-date                       |   no used       | Date (ISO 8601)                                                      | 2018-01-01 |
+| deploy\|dc       |  io.shyrka.erebus/end-date                         |   used          | Date (ISO 8601)                                                      | 2018-01-01 |
+| deploy\|dc       |  io.shyrka.erebus/framework:${name}                |   used          | .../framework:lamp                                                   | 2018-01-01 |
+| deploy\|dc       |  io.shyrka.erebus/scope:${scope}                   |   string        | development \ production \ preproduction                             | production |
+| deploy\|dc       |  io.shyrka.erebus/scope:${scope}                   |   string        | development \ production \ preproduction                             | production |
+| deploy\|dc\|jobs |  io.shyrka.erebus.${framework}-info/role:${role}                    |   string        | lamp-info/role:database, lamp-info/role:application                  | production |
+| deploy\|dc\|jobs |  io.shyrka.erebus.${framework}-info/${component}-version:${version} |   vernum        | lamp-info/mariadb-version:10.2.13, lamp-info/httpd-version: 2.4.23   | production |
 
 --
 

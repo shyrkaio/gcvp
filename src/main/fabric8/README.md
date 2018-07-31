@@ -1,0 +1,1 @@
+This folder should be for Deployment and DeployementConfig, but currently GCVP is only working for job and cronjob.

@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: List
+metadata:
+items:
+- apiVersion: v1
+  data:
+    shyrka: "true"
+  kind: ConfigMap
+  metadata:
+    name: shyrka
+    labels:
+      io.shyrka.erebus/pjt-name: sample
+      io.shyrka.erebus/product.owner: john.doe
+      io.shyrka.erebus/product.owners.last.acknowledgement: 2017-11-05
+    annotations:
+      io.shyrka.erebus/product.owner.email: john.doe@yopmail.com
+      io.shyrka.erebus/team.watchers: "{0 : lerappoffi-4267@yopmail.com, 1 : opanuvo-6133@yopmail.com, 2 : sonixesommo-4201@yopmail.com, 3 : emmoddoddas-4771@yopmail.com}"
+      io.shyrka.gcvp/component-list: "{}"
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/image.dockerRepositoryCheck: ''
+    generation: 2
+    labels:
+      app: nginx
+    name: nginx
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+      - annotations:
+          openshift.io/imported-from: 'kanedafromparis/nginx:ocp-0.1'
+        from:
+          kind: DockerImage
+          name: 'kanedafromparis/nginx:ocp-0.1'
+        generation: 2
+        importPolicy: {}
+        name: 'ocp-0.1'
+        referencePolicy:
+          type: Source
+      - annotations:
+          openshift.io/imported-from: 'kanedafromparis/nginx:ocp-0.2'
+        from:
+          kind: DockerImage
+          name: 'kanedafromparis/nginx:ocp-0.2'
+        generation: 3
+        importPolicy: {}
+        name: 'ocp-0.2'
+        referencePolicy:
+          type: Source
+      - annotations:
+          openshift.io/imported-from: 'kanedafromparis/nginx:ocp-0.3'
+        from:
+          kind: DockerImage
+          name: 'kanedafromparis/nginx:ocp-0.3'
+        generation: 4
+        importPolicy: {}
+        name: 'ocp-0.3'
+        referencePolicy:
+          type: Source
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      io.shyrka.erebus/product.owner.email: "john.doe@yopmail.com"
+    generation: 2
+    labels:
+      app: dev
+      io.shyrka.erebus/pjt-stage: dev
+      io.shyrka.gcvp/scaledown: "true"
+      io.shyrka.erebus/end-date: "2018-01-01"
+      io.shyrka.erebus/pjt-name: sample
+    name: dev
+  spec:
+    replicas: 2
+    selector:
+      app: dev
+      deploymentconfig: dev
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: dev
+          deploymentconfig: dev
+      spec:
+        containers:
+          - image: 
+            imagePullPolicy: Always
+            name: dev
+            ports:
+              - containerPort: 8080
+                protocol: TCP
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - dev
+          from:
+            kind: ImageStreamTag
+            name: 'nginx:ocp-0.3'
+            namespace: sample-shyrka
+        type: ImageChange

@@ -19,6 +19,10 @@ import static io.github.kandefromparis.shyrka.ConformityIssue.NO_PROJECT_OWNER_L
 import static io.github.kandefromparis.shyrka.ConformityIssue.NO_SHYRKA_CONFIGMAP;
 import io.github.kandefromparis.shyrka.DumpProject;
 import static io.github.kandefromparis.shyrka.ShyrkaLabel.*;
+import io.github.kandefromparis.shyrka.projectchecker.model.Checker;
+import io.github.kandefromparis.shyrka.gcvp.Ephyra;
+import io.github.kandefromparis.shyrka.gcvp.CaiusPupus;
+import io.vertx.core.json.JsonObject;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -33,6 +37,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.json.JSONException;
 
@@ -56,7 +61,7 @@ public class GCVP {
     }
 
     public static void main(String[] args) throws InterruptedException {
-
+        Logger log = LoggerFactory.getLogger(GCVP.class);
         // create Options object
         Options options = new Options();
         options.addOption("s", "scaleDown", false, "This commande will scale down Deployment and DeploymentConfig according to label policy");
@@ -67,16 +72,32 @@ public class GCVP {
         options.addOption("h", "help", false, "This commande will display this message");
         options.addOption("t", "trigger", true, "This commande use option for trigger, email, webhoock, events [not implemented yet]");
         options.addOption("l", "logfile", true, "This commande allow to overwrite default logfile]");
+
+        //@todo put that into another file/project?
         options.addOption("d", "dump", true, "This commande dump the targeted ressources dc, deploy, route, svc, ");
+        options.addOption("output", true, "Output format. One of json|yaml");
+
         options.addOption("dir", true, "This commande define the directory to dump the files");
         options.addOption("git", true, "This commande define the git parameter");
         options.addOption("gitoken", true, "This commande define the git parameter");
+
+        options.addOption("caius", true, "This commande will execute the caius pupus project checker");
+        options.addOption("caiusLabels", true, "This commande will execute the caius pupus project checker only on this label");
+
+        options.addOption("caiusConfPath", true, "This commande allow to overwrite default configurationfile");
+        options.addOption("caiusNS", true, "This commande allow to overwrite default all Namespace target");
+
+        options.addOption("ephyra", false, "This commande will execute the ephyra pod killer");
+        options.addOption("ephyraConfPath", true, "This commande allow to overwrite default configurationfile");
+        options.addOption("ephyraNS", true, "This commande allow to overwrite default all Namespace target");
+        options.addOption("ephyraLabels", true, "This commande will execute the ephyra only on this label");
 
         options.addOption("key", true, "This options define the key to be use to encrypt the base64 fields [data, .dockercfg] of secrets");
 
         CommandLineParser parser = new DefaultParser();
         try {
             Config config = new ConfigBuilder().build();
+            //config.setOauthToken(oauthToken);
             GCVP robot = new GCVP(config);
 
             // parse the command line arguments
@@ -112,21 +133,22 @@ public class GCVP {
                 return;
             }
 
-            String dir = line.getOptionValue("dir", System.getProperty("user.dir") + "/yaml-backup");
-            File f = new File(dir);
-            f.mkdirs();
-            if (!f.exists()) {
-                System.out.println(" " + f.getCanonicalPath() + " does not existe");
-                return;
-            }
-            if (!f.isDirectory()) {
-                System.out.println(" " + f.getCanonicalPath() + " is not a directory");
-                return;
-            }
-
             if (line.hasOption("d")) {
+                String dir = line.getOptionValue("dir", System.getProperty("user.dir") + "/yaml-backup");
+                File f = new File(dir);
+                f.mkdirs();
+                if (!f.exists()) {
+                    System.out.println(" " + f.getCanonicalPath() + " does not existe");
+                    return;
+                }
+                if (!f.isDirectory()) {
+                    System.out.println(" " + f.getCanonicalPath() + " is not a directory");
+                    return;
+                }
                 String optionValue = line.getOptionValue("d");
-                dumpswitch(optionValue,robot.osClient, config.getNamespace(), f);
+                String outPutFormat = line.getOptionValue("output", "json");
+                dumpswitch(optionValue, robot.osClient, config.getNamespace(), f, outPutFormat);
+
                 return;
 
             }
@@ -147,7 +169,52 @@ public class GCVP {
                 while (iter.hasNext()) {
                     ConformityIssue next = iter.next();
                     System.out.println(next.getErrorCode() + " : " + next.getErrorMessageCode() + " - " + next.getErrorMessage());
+
                 }
+                return;
+            }
+
+            if (line.hasOption("caius")) {
+
+                String confPath = line.getOptionValue("caiusConfPath", System.getProperty("user.dir") + "/conf/checker.yaml");
+                String caiusLabel = line.getOptionValue("caiusLabels", StringUtils.EMPTY);
+                String caiusNS = line.getOptionValue("caiusNS", StringUtils.EMPTY);
+                CaiusPupus auditor = new CaiusPupus();
+                //@todo add checker
+                Checker conf = auditor.load(confPath);
+                JsonObject auditResult;
+                if (StringUtils.EMPTY.equals(caiusLabel)) {
+                    auditResult = auditor.audit(conf, robot.osClient, caiusNS);
+                } else {
+                    auditResult = auditor.auditForLabel(conf, robot.osClient, caiusNS, caiusLabel);
+                }
+                System.out.println(auditResult.toString());
+                return;
+
+            }
+            if (line.hasOption("ephyra")) {
+                String confPath = line.getOptionValue("ephyraConfPath", System.getProperty("user.dir") + "/conf/ephyra.yaml");
+                String ephyraNS = line.getOptionValue("ephyraNS", StringUtils.EMPTY);
+                String ephyraLabels = line.getOptionValue("ephyraLabels", StringUtils.EMPTY);
+
+                Ephyra eph = new Ephyra();
+                JsonObject conf = eph.load(confPath);
+
+                if (line.hasOption("k")) {
+                    eph.terminateOldPod(conf, robot.osClient, ephyraNS, ephyraLabels);
+                    System.out.println(" Cleanning pod for " + ephyraNS + " done ");
+                    log.info(" Cleanning kubernetes pod for " + ephyraNS + " done ");
+                    return;
+                } else if (line.hasOption("o")) {
+                    eph.terminateOldPodOpenshift(conf, robot.osClient, ephyraNS, ephyraLabels);
+                    System.out.println(" Cleanning openshift pod for " + ephyraNS + " done ");
+                    log.info(ephyraNS);
+                    return;
+                } else {
+                    System.out.println(" You can need to select either o (openshift) or k (kubernetes)");
+                    return;
+                }
+
             }
 
         } catch (org.apache.commons.cli.ParseException ex) {
@@ -170,46 +237,77 @@ public class GCVP {
     //    }
 
     protected static void dumpswitch(String optionValue, OpenShiftClient osClient, String nameSpace, File f) {
+        dumpswitch(optionValue, osClient, nameSpace, f, "json");
+    }
+
+    protected static void dumpswitch(String optionValue, OpenShiftClient osClient, String nameSpace, File f, String outPutFormat) {
         try {
             DumpProject dumpProject = new DumpProject();
-            
+
             switch (optionValue) {
                 case "all":
                     System.out.println(" Feature not implemented yet");
-                    
+
                 case "configmap":
-                    System.out.println(dumpProject.dumpConfigmap(osClient, nameSpace,f));
-                    
-                    if(!optionValue.equals("all")){break;};
+                    System.out.println(dumpProject.dumpConfigmap(osClient, nameSpace, f, outPutFormat));
+
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
                 case "deploy":
-                    System.out.println(dumpProject.dumpDeploy(osClient, nameSpace, f));
-                    if(!optionValue.equals("all")){break;};
+                    System.out.println(dumpProject.dumpDeploy(osClient, nameSpace, f, outPutFormat));
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
                 case "secret":
-                    System.out.println(dumpProject.dumpSecret(osClient, nameSpace, f));
-                    if(!optionValue.equals("all")){break;};
+                    System.out.println(dumpProject.dumpSecret(osClient, nameSpace, f, outPutFormat));
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
                 case "svc":
-                    System.out.println(dumpProject.dumpService(osClient, nameSpace, f));
-                    if(!optionValue.equals("all")){break;};
+                    System.out.println(dumpProject.dumpService(osClient, nameSpace, f, outPutFormat));
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
                 case "endpoints":
                     System.out.println(" Feature not implemented yet");
-                    if(!optionValue.equals("all")){break;};
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
                 case "hpa":
                     System.out.println(" Feature not implemented yet");
-                    if(!optionValue.equals("all")){break;};
-                    //openshift
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
+                //openshift
                 case "bc":
                     System.out.println(" Feature not implemented yet");
-                    if(!optionValue.equals("all")){break;};
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
                 case "dc":
                     System.out.println(" Feature not implemented yet");
-                    if(!optionValue.equals("all")){break;};
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
                 case "routes":
                     System.out.println(" Feature not implemented yet");
-                    if(!optionValue.equals("all")){break;};
-                    
+                    if (!optionValue.equals("all")) {
+                        break;
+                    }
+                    ;
+
                 default:
                     System.out.println(" Feature not implemented yet");
-                    
+
             }
         } catch (JSONException ex) {
             java.util.logging.Logger.getLogger(GCVP.class.getName()).log(Level.SEVERE, null, ex);
@@ -452,7 +550,5 @@ public class GCVP {
         //FilterWatchListDeletable<ConfigMap, ConfigMapList, Boolean, Watch, Watcher<ConfigMap>> withLabelSelector = configMap.withLabelSelector(selector);
         //logger.info("Upserted ConfigMap at " + configMap.getMetadata().getSelfLink() + " data " + configMap.getData());
     }
-
-   
 
 }

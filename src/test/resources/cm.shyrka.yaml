@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  shyrka: "true"
+kind: ConfigMap
+metadata:
+  annotations:
+    io.shyrka.erebus/product.owner.email: charles.sabourdin.exmc@axa-tech.com
+    io.shyrka.erebus/team.watchers: '{0 : tugdual.briand@axa-tech.com, 1 : pascal.trouvin.exmc@axa-tech.com, 2 : sebastien.rohaut@axa-tech.com}'
+  labels:
+    io.shyrka.erebus/pjt-name: anacreon
+    io.shyrka.erebus/product.owner: charles.sabourdin
+    io.shyrka.erebus/product.owners.last.acknowledgement: 2018-05-22
+  name: shyrka
