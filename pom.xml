@@ -3,16 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.kandefromparis.shyrka</groupId>
     <artifactId>gcvp</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <scm>
-        <connection>scm:git:git://github.com/kanedafomparisfriends/gcvp.git</connection>
-        <developerConnection>scm:git:git://kanedafomparisfriends/gcvp.git</developerConnection>
-        <url>https://github.com/kanedafomparisfriends/gcvp.git</url>
+        <connection>scm:git:git://github.com/kanedafromparisfriends/gcvp.git</connection>
+        <developerConnection>scm:git:git:@github.com:kanedafromparisfriends/gcvp.git</developerConnection>
+        <url>https://github.com/kanedafromparisfriends/gcvp.git</url>
     </scm>
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/kanedafomparisfriends/gcvp/issues/</url>
+        <url>https://github.com/kanedafromparisfriends/gcvp/issues/</url>
     </issueManagement>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -47,25 +47,25 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-model</artifactId>
-            <version>2.0.8</version>
+            <version>3.0.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client</artifactId>
-            <version>3.1.8</version>
+            <version>4.0.3</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>openshift-client</artifactId>
-            <version>3.1.8</version>
+            <version>4.0.3</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-assertions</artifactId>
-            <version>3.0.11</version>
+            <version>3.0.12</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -83,8 +83,8 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-server-mock</artifactId>
-            <version>3.1.8</version>
-            <scope>test</scope>
+            <version>4.0.3</version>
+            <scope>test</scope>          
             <exclusions>
                 <exclusion>
                     <groupId>com.sun</groupId>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>openshift-server-mock</artifactId>
-            <version>3.1.8</version>
+            <version>4.0.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
-            <version>3.5.1</version>
+            <version>3.5.3</version>
             <type>jar</type>
         </dependency>
     </dependencies>
@@ -161,8 +161,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>10</source>
+                    <target>10</target>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
@@ -369,6 +369,18 @@
                         </config>
                     </enricher>
                 </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>3.3.0</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                  </execution>
+              </executions>
             </plugin>
         </plugins>
     </build>

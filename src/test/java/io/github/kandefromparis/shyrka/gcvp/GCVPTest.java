@@ -9,11 +9,12 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.NodeSpec;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.PodBuilder;
-import io.fabric8.kubernetes.api.model.extensions.Deployment;
-import io.fabric8.kubernetes.api.model.extensions.DeploymentBuilder;
-import io.fabric8.kubernetes.api.model.extensions.DeploymentList;
-import io.fabric8.kubernetes.api.model.extensions.DoneableDeployment;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
+import io.fabric8.kubernetes.api.model.apps.DeploymentList;
+import io.fabric8.kubernetes.api.model.apps.DoneableDeployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
@@ -62,7 +63,9 @@ public class GCVPTest {
 
     @Rule
     public OpenShiftServer ocpServer = new OpenShiftServer(true, true);
-
+ 
+    public Utils utils = new Utils();
+ 
     final String NS = "groumphfs";
 
     public GCVPTest() {
@@ -79,17 +82,21 @@ public class GCVPTest {
     @Before
     public void setUp() {
 
-        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS, "2018-01-01", "true", "dev", 1));
+
+        kbeServer.getClient().nodes().create(utils.createNode("node1"));
+        kbeServer.getClient().nodes().create(utils.createNode("node2"));
+
+        kbeServer.getClient().apps().deployments().inNamespace(NS).create(this.getDeploy(NS, "2018-01-01", "true", "dev", 1));
         ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, "2018-01-01", "true", "dev", 1));
 
         String pprodDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 1));
 
-        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS, pprodDate, "true", "pprod", 1));
+        kbeServer.getClient().apps().deployments().inNamespace(NS).create(this.getDeploy(NS, pprodDate, "true", "pprod", 1));
         ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, pprodDate, "true", "pprod", 1));
 
         String prodDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 6));
 
-        kbeServer.getClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS, prodDate, "true", "prod", 1));
+        kbeServer.getClient().apps().deployments().inNamespace(NS).create(this.getDeploy(NS, prodDate, "true", "prod", 1));
         ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, prodDate, "true", "prod", 1));
 
     }
@@ -153,13 +160,11 @@ public class GCVPTest {
 
     /**
      * Test of main method, of class GCVP.
+     *
+     * @throws java.lang.Exception
      */
     @org.junit.Test
-    public void testMain() throws Exception {
-        kbeServer.expect().withPath("/api/v1/nodes/node1").andReturn(200, new PodBuilder().build()).once();
-        kbeServer.expect().withPath("/api/v1/nodes/node2").andReturn(200, new PodBuilder().build()).once();
-        kbeServer.expect().withPath("/api/v1/nodes/node3").andReturn(404, null).once();
-
+    public void testMain() throws Exception {       
         KubernetesClient client = kbeServer.getClient();
 
         Node node = client.nodes().withName("node1").get();
@@ -168,8 +173,8 @@ public class GCVPTest {
         node = client.nodes().withName("node2").get();
         assertNotNull(node);
 
-        NodeSpec spec = client.nodes().withName("node3").get().getSpec();
-        assertNull(spec);
+        node = client.nodes().withName("node3").get();
+        assertNull(node);
     }
 
     /**
@@ -178,7 +183,7 @@ public class GCVPTest {
     @org.junit.Test
     public void testScaleDownDeployement() throws Exception {
         KubernetesClient client = kbeServer.getClient();
-        MixedOperation<Deployment, DeploymentList, DoneableDeployment, ScalableResource<Deployment, DoneableDeployment>> deployments = client.extensions().deployments();
+        MixedOperation<Deployment, DeploymentList, DoneableDeployment, ScalableResource<Deployment, DoneableDeployment>> deployments = client.apps().deployments();
         Iterator<Deployment> iterator = deployments.list().getItems().iterator();
         while (iterator.hasNext()) {
             Deployment next = iterator.next();
@@ -348,7 +353,7 @@ public class GCVPTest {
 
         GCVP robot = new GCVP(this.ocpServer.getOpenshiftClient().getConfiguration());
 
-        List<ConformityIssue> conformityCheck = robot.conformityCheck(NS);           
+        List<ConformityIssue> conformityCheck = robot.conformityCheck(NS);
         Assert.assertTrue(conformityCheck.contains(PROJECT_CONFIRMATION_EXPIRED));
         Assert.assertEquals(1, conformityCheck.size());
 
@@ -376,6 +381,5 @@ public class GCVPTest {
         Assert.assertEquals(1, conformityCheck.size());
         ocpServer.getOpenshiftClient().configMaps().inNamespace(NS).delete();
     }
-
 
 }

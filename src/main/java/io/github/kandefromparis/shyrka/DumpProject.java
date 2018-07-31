@@ -11,7 +11,7 @@ import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.api.model.extensions.Deployment;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.utils.Serialization;
 import io.fabric8.openshift.client.OpenShiftClient;
 import java.io.File;
@@ -60,7 +60,7 @@ public class DumpProject {
     }
 
     public Boolean dumpDeploy(OpenShiftClient osClient, String NS, File dir, String outPutFormat) throws IOException {
-        ListIterator<Deployment> lst = osClient.extensions().deployments().inNamespace(NS).list().getItems().listIterator();
+        ListIterator<Deployment> lst = osClient.apps().deployments().inNamespace(NS).list().getItems().listIterator();
         ObjectMapper mapper = new ObjectMapper();
 
         while (lst.hasNext()) {

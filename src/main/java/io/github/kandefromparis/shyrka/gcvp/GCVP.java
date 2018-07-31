@@ -6,7 +6,7 @@
 package io.github.kandefromparis.shyrka.gcvp;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.extensions.Deployment;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.openshift.api.model.DeploymentConfig;
@@ -318,7 +318,7 @@ public class GCVP {
 
     public void scaleDownKube(String NS) {
 
-        Iterator<Deployment> iterator = this.osClient.extensions().deployments().inNamespace(NS).list().getItems().iterator();
+        Iterator<Deployment> iterator = this.osClient.apps().deployments().inNamespace(NS).list().getItems().iterator();
         while (iterator.hasNext()) {
             Deployment next = iterator.next();
             if (scaleDownDeploy(next)) {
@@ -441,7 +441,7 @@ public class GCVP {
                         logger.info("scale down (current date after " + L_END_DATE.getlabel() + "=" + next.getMetadata().getLabels().get(L_END_DATE.getlabel()) + ") of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
 
                         next.getSpec().setReplicas(0);
-                        this.osClient.extensions().deployments().inNamespace(next.getMetadata().getNamespace()).createOrReplace(next);
+                        this.osClient.apps().deployments().inNamespace(next.getMetadata().getNamespace()).createOrReplace(next);
                         return true;
                     } else {
                         logger.debug("no modification (current date before " + L_END_DATE.getlabel() + "=" + next.getMetadata().getLabels().get(L_END_DATE.getlabel()) + ") of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
@@ -456,7 +456,7 @@ public class GCVP {
         } else {
             logger.info("scale down (no value for " + L_END_DATE.getlabel() + ") of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
             next.getSpec().setReplicas(0);
-            this.osClient.extensions().deployments().inNamespace(next.getMetadata().getNamespace()).createOrReplace(next);
+            this.osClient.apps().deployments().inNamespace(next.getMetadata().getNamespace()).createOrReplace(next);
 
             return true;
         }

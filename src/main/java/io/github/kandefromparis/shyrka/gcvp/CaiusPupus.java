@@ -15,8 +15,8 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapList;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.api.model.SecretList;
-import io.fabric8.kubernetes.api.model.extensions.Deployment;
-import io.fabric8.kubernetes.api.model.extensions.DeploymentList;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentList;
 import io.fabric8.openshift.api.model.BuildConfig;
 import io.fabric8.openshift.api.model.BuildConfigList;
 import io.fabric8.openshift.api.model.DeploymentConfig;
@@ -100,7 +100,7 @@ public class CaiusPupus {
                 return Boolean.FALSE;
 
             case "deploy":
-                DeploymentList listD = osClient.extensions().deployments().inNamespace(nameSpace).list();
+                DeploymentList listD = osClient.apps().deployments().inNamespace(nameSpace).list();
                 Iterator<Deployment> iterator = listD.getItems().iterator();
                 while (iterator.hasNext()) {
                     Deployment next = iterator.next();

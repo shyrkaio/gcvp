@@ -13,6 +13,7 @@ import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.HTTPGetAction;
 import io.fabric8.kubernetes.api.model.HTTPHeader;
 import io.fabric8.kubernetes.api.model.IntOrString;
+import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.PodSpecBuilder;
 import io.fabric8.kubernetes.api.model.PodTemplateSpec;
@@ -22,8 +23,8 @@ import io.fabric8.kubernetes.api.model.ProbeBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.ResourceRequirements;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
-import io.fabric8.kubernetes.api.model.extensions.Deployment;
-import io.fabric8.kubernetes.api.model.extensions.DeploymentBuilder;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.api.model.DeploymentConfigBuilder;
 import io.fabric8.openshift.client.server.mock.OpenShiftServer;
@@ -61,7 +62,7 @@ class Utils {
     }
 
     private void createDeployement(OpenShiftServer ocpServer, String NS, String lEndDate, String lScaleDown, String lStage, Integer replicas, String image, String name) {
-        ocpServer.getOpenshiftClient().extensions().deployments().inNamespace(NS).create(this.getDeploy(NS, lEndDate, lScaleDown, lStage, replicas, image, name));
+        ocpServer.getOpenshiftClient().apps().deployments().inNamespace(NS).create(this.getDeploy(NS, lEndDate, lScaleDown, lStage, replicas, image, name));
         //
         ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, lEndDate, lScaleDown, lStage, replicas, image, name));
     }
@@ -69,7 +70,6 @@ class Utils {
     public Deployment getDeploy(String ns, String lEndDate, String lScaleDown, String lStage, String image, String name) {
         return this.getDeploy(ns, lEndDate, lScaleDown, lStage, 1, image, name);
     }
-
 
     public Deployment getDeploy(String ns, String lEndDate, String lScaleDown, String lStage, Integer replicas, String image, String name) {
         Map<String, String> labels = getDCLabels(lEndDate, lScaleDown, lStage);
@@ -189,6 +189,15 @@ class Utils {
                 .withSpec(podSpec.build());
         return templateSpec.build();
 
+    }
+
+    Node createNode(String name) {
+        ObjectMeta meta = new ObjectMeta();
+        meta.setName(name);
+        Node node00 = new Node();
+        node00.setMetadata(meta);
+        return node00;
+    
     }
 
 }
