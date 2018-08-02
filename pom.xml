@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.kandefromparis.shyrka</groupId>
     <artifactId>gcvp</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6-SNAPSHOT</version>
     <packaging>jar</packaging>
     <scm>
         <connection>scm:git:git://github.com/kanedafromparisfriends/gcvp.git</connection>
         <developerConnection>scm:git:git@github.com:kanedafromparisfriends/gcvp.git</developerConnection>
         <url>https://github.com/kanedafromparisfriends/gcvp.git</url>
-      <tag>gcvp-0.0.5</tag>
+      <tag>HEAD</tag>
   </scm>
     <issueManagement>
         <system>GitHub</system>
