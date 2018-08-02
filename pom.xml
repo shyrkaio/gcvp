@@ -3,13 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.kandefromparis.shyrka</groupId>
     <artifactId>gcvp</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
     <scm>
         <connection>scm:git:git://github.com/kanedafromparisfriends/gcvp.git</connection>
         <developerConnection>scm:git:git@github.com:kanedafromparisfriends/gcvp.git</developerConnection>
         <url>https://github.com/kanedafromparisfriends/gcvp.git</url>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/kanedafromparisfriends/gcvp/issues/</url>
@@ -244,7 +245,7 @@
                                     <targetDir>/opt/${project.artifactId}</targetDir>
                                     <descriptor>../assembly/docker-assembly.xml</descriptor>
                                 </assembly>
-                                <maintainer></maintainer>
+                                <maintainer />
                                 <workdir>/opt/${project.artifactId}</workdir>
                                 <env>
                                     <JVM_OPTIONS>-Djava.security.egd=file:/dev/./urandom 
@@ -331,7 +332,7 @@
                                     <!-- name>kanedafromparis/${project.artifactId}:${project.version}</name -->
                                     <descriptor>../assembly/docker-assembly.xml</descriptor>
                                 </assembly>
-                                <maintainer></maintainer>
+                                <maintainer />
                                 <workdir>/opt/${project.artifactId}</workdir>
                                 <env>
                                     <JVM_OPTIONS>-Djava.security.egd=file:/dev/./urandom \ 
