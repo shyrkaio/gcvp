@@ -45,9 +45,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @todo check this #$#$#% logging
+ * g
+ *
  * @author csabourdin
+ * @version $Id: $Id
  */
+//@TODO check this #$#$#% loggin
 public class GCVP {
 
     private final Logger logger = LoggerFactory.getLogger(GCVP.class);
@@ -60,6 +63,12 @@ public class GCVP {
 
     }
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.lang.InterruptedException if any.
+     */
     public static void main(String[] args) throws InterruptedException {
         Logger log = LoggerFactory.getLogger(GCVP.class);
         // create Options object
@@ -236,10 +245,27 @@ public class GCVP {
     //
     //    }
 
+    /**
+     * <p>dumpswitch.</p>
+     *
+     * @param optionValue a {@link java.lang.String} object.
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param nameSpace a {@link java.lang.String} object.
+     * @param f a {@link java.io.File} object.
+     */
     protected static void dumpswitch(String optionValue, OpenShiftClient osClient, String nameSpace, File f) {
         dumpswitch(optionValue, osClient, nameSpace, f, "json");
     }
 
+    /**
+     * <p>dumpswitch.</p>
+     *
+     * @param optionValue a {@link java.lang.String} object.
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param nameSpace a {@link java.lang.String} object.
+     * @param f a {@link java.io.File} object.
+     * @param outPutFormat a {@link java.lang.String} object.
+     */
     protected static void dumpswitch(String optionValue, OpenShiftClient osClient, String nameSpace, File f, String outPutFormat) {
         try {
             DumpProject dumpProject = new DumpProject();
@@ -316,6 +342,11 @@ public class GCVP {
         }
     }
 
+    /**
+     * <p>scaleDownKube.</p>
+     *
+     * @param NS a {@link java.lang.String} object.
+     */
     public void scaleDownKube(String NS) {
 
         Iterator<Deployment> iterator = this.osClient.apps().deployments().inNamespace(NS).list().getItems().iterator();
@@ -328,6 +359,11 @@ public class GCVP {
 
     }
 
+    /**
+     * <p>scaleDownOcp.</p>
+     *
+     * @param NS a {@link java.lang.String} object.
+     */
     public void scaleDownOcp(String NS) {
 
         Iterator<DeploymentConfig> iterator = this.osClient.deploymentConfigs().inNamespace(NS).list().getItems().iterator();
@@ -468,7 +504,8 @@ public class GCVP {
     /**
      * this method check that the configmap has correct values
      *
-     * @return
+     * @param NS a {@link java.lang.String} object.
+     * @return a {@link java.util.List} object.
      */
     public List<ConformityIssue> conformityCheck(String NS) {
 

@@ -12,6 +12,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * <p>Spec class.</p>
+ *
+ * @author csabourdin
+ * @version $Id: $Id
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "checks"
@@ -21,11 +27,21 @@ public class Spec {
     @JsonProperty("checks")
     private List<Check> checks = new ArrayList<Check>();
     
+    /**
+     * <p>Getter for the field <code>checks</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     @JsonProperty("checks")
     public List<Check> getChecks() {
         return checks;
     }
 
+    /**
+     * <p>Setter for the field <code>checks</code>.</p>
+     *
+     * @param checks a {@link java.util.List} object.
+     */
     @JsonProperty("checks")
     public void setChecks(List<Check> checks) {
         this.checks = checks;
@@ -33,6 +49,7 @@ public class Spec {
 
     
     
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -49,6 +66,7 @@ public class Spec {
         return sb.toString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int result = 1;
@@ -56,6 +74,7 @@ public class Spec {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object other) {
         if (other == this) {

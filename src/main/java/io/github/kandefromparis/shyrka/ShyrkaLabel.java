@@ -6,8 +6,10 @@
 package io.github.kandefromparis.shyrka;
 
 /**
+ * <p>ShyrkaLabel class.</p>
  *
  * @author csabourdin
+ * @version $Id: $Id
  */
 public enum ShyrkaLabel {
     //this is the stack name 
@@ -59,14 +61,26 @@ public enum ShyrkaLabel {
         this.label = label;
     }
 
+    /**
+     * <p>Getter for the field <code>label</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getlabel() {
         return this.label;
     }
 
+    /**
+     * <p>build.</p>
+     *
+     * @param s a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public String build(String s) {
         return this.label + s;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return this.label;

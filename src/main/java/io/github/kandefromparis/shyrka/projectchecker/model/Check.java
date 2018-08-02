@@ -12,6 +12,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * <p>Check class.</p>
+ *
+ * @author csabourdin
+ * @version $Id: $Id
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "namespace",
@@ -72,10 +78,10 @@ public class Check {
     private Map<java.lang.String, Object> additionalProperties = new HashMap<java.lang.String, Object>();
 
     /**
-     * The Namespace Schema 
+     * The Namespace Schema
      * <p>
-     * 
-     * 
+     *
+     * @return a {@link java.lang.String} object.
      */
     @JsonProperty("namespace")
     public java.lang.String getNamespace() {
@@ -83,10 +89,10 @@ public class Check {
     }
 
     /**
-     * The Namespace Schema 
+     * The Namespace Schema
      * <p>
-     * 
-     * 
+     *
+     * @param namespace a {@link java.lang.String} object.
      */
     @JsonProperty("namespace")
     public void setNamespace(java.lang.String namespace) {
@@ -94,10 +100,10 @@ public class Check {
     }
 
     /**
-     * The Name Schema 
+     * The Name Schema
      * <p>
-     * 
-     * 
+     *
+     * @return a {@link java.lang.String} object.
      */
     @JsonProperty("name")
     public java.lang.String getName() {
@@ -105,10 +111,10 @@ public class Check {
     }
 
     /**
-     * The Name Schema 
+     * The Name Schema
      * <p>
-     * 
-     * 
+     *
+     * @param name a {@link java.lang.String} object.
      */
     @JsonProperty("name")
     public void setName(java.lang.String name) {
@@ -116,10 +122,10 @@ public class Check {
     }
 
     /**
-     * The Comment Schema 
+     * The Comment Schema
      * <p>
-     * 
-     * 
+     *
+     * @return a {@link java.lang.String} object.
      */
     @JsonProperty("comment")
     public java.lang.String getComment() {
@@ -127,10 +133,10 @@ public class Check {
     }
 
     /**
-     * The Comment Schema 
+     * The Comment Schema
      * <p>
-     * 
-     * 
+     *
+     * @param comment a {@link java.lang.String} object.
      */
     @JsonProperty("comment")
     public void setComment(java.lang.String comment) {
@@ -138,10 +144,10 @@ public class Check {
     }
 
     /**
-     * The Ressourcetype Schema 
+     * The Ressourcetype Schema
      * <p>
-     * 
-     * 
+     *
+     * @return a {@link java.lang.String} object.
      */
     @JsonProperty("ressourceType")
     public java.lang.String getRessourceType() {
@@ -149,31 +155,41 @@ public class Check {
     }
 
     /**
-     * The Ressourcetype Schema 
+     * The Ressourcetype Schema
      * <p>
-     * 
-     * 
+     *
+     * @param ressourceType a {@link java.lang.String} object.
      */
     @JsonProperty("ressourceType")
     public void setRessourceType(java.lang.String ressourceType) {
         this.ressourceType = ressourceType;
     }
 
+    /**
+     * <p>Getter for the field <code>labels</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     @JsonProperty("labels")
     public Map<String, String> getLabels() {
         return labels;
     }
 
+    /**
+     * <p>Setter for the field <code>labels</code>.</p>
+     *
+     * @param labels a {@link java.util.Map} object.
+     */
     @JsonProperty("labels")
     public void setLabels(Map<String, String> labels) {
         this.labels = labels;
     }
 
     /**
-     * The Weight Schema 
+     * The Weight Schema
      * <p>
-     * 
-     * 
+     *
+     * @return a {@link java.lang.Integer} object.
      */
     @JsonProperty("weight")
     public Integer getWeight() {
@@ -181,36 +197,58 @@ public class Check {
     }
 
     /**
-     * The Weight Schema 
+     * The Weight Schema
      * <p>
-     * 
-     * 
+     *
+     * @param weight a {@link java.lang.Integer} object.
      */
     @JsonProperty("weight")
     public void setWeight(Integer weight) {
         this.weight = weight;
     }
 
+    /**
+     * <p>Getter for the field <code>queries</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     @JsonProperty("queries")
     public List<Query> getQueries() {
         return queries;
     }
 
+    /**
+     * <p>Setter for the field <code>queries</code>.</p>
+     *
+     * @param queries a {@link java.util.List} object.
+     */
     @JsonProperty("queries")
     public void setQueries(List<Query> queries) {
         this.queries = queries;
     }
 
+    /**
+     * <p>Getter for the field <code>additionalProperties</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     @JsonAnyGetter
     public Map<java.lang.String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
+    /**
+     * <p>setAdditionalProperty.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     * @param value a {@link java.lang.Object} object.
+     */
     @JsonAnySetter
     public void setAdditionalProperty(java.lang.String name, Object value) {
         this.additionalProperties.put(name, value);
     }
 
+    /** {@inheritDoc} */
     @Override
     public java.lang.String toString() {
         StringBuilder sb = new StringBuilder();
@@ -255,6 +293,7 @@ public class Check {
         return sb.toString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int result = 1;
@@ -269,6 +308,7 @@ public class Check {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object other) {
         if (other == this) {

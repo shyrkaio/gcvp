@@ -12,6 +12,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * <p>Query class.</p>
+ *
+ * @author csabourdin
+ * @version $Id: $Id
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "query",
@@ -30,36 +36,67 @@ public class Query {
     @JsonProperty("result")
     private Boolean result; 
     
+    /**
+     * <p>Getter for the field <code>query</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     @JsonProperty("query")
     public String getQuery() {
         return query;
     }
 
+    /**
+     * <p>Setter for the field <code>query</code>.</p>
+     *
+     * @param query a {@link java.lang.String} object.
+     */
     @JsonProperty("query")
     public void setQuery(String query) {
         this.query = query;
     }
 
+    /**
+     * <p>Getter for the field <code>expectedResult</code>.</p>
+     *
+     * @return a {@link java.lang.Boolean} object.
+     */
     @JsonProperty("expectedResult")
     public Boolean getExpectedResult() {
         return expectedResult;
     }
 
+    /**
+     * <p>Setter for the field <code>expectedResult</code>.</p>
+     *
+     * @param expectedResult a {@link java.lang.Boolean} object.
+     */
     @JsonProperty("Boolean expectedResult")
     public void setExpectedResult(Boolean expectedResult) {
         this.expectedResult = expectedResult;
     }
+    /**
+     * <p>Getter for the field <code>result</code>.</p>
+     *
+     * @return a {@link java.lang.Boolean} object.
+     */
     @JsonProperty("result")
     public Boolean getResult() {
         return result;
     }
 
+    /**
+     * <p>Setter for the field <code>result</code>.</p>
+     *
+     * @param result a {@link java.lang.Boolean} object.
+     */
     @JsonProperty("result")
     public void setResult(Boolean result) {
         this.result = result;
     }
     
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -88,6 +125,7 @@ public class Query {
         return sb.toString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int result = 1;
@@ -98,6 +136,7 @@ public class Query {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object other) {
         if (other == this) {

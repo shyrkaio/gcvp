@@ -10,8 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
+ * <p>Checker class.</p>
  *
  * @author csabourdin
+ * @version $Id: $Id
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -34,6 +36,8 @@ public class Checker {
     private Spec spec;
 
     /**
+     * <p>Getter for the field <code>apiVersion</code>.</p>
+     *
      * @return the apiVersion
      */
     @JsonProperty("apiVersion")
@@ -42,6 +46,8 @@ public class Checker {
     }
 
     /**
+     * <p>Setter for the field <code>apiVersion</code>.</p>
+     *
      * @param apiVersion the apiVersion to set
      */
     @JsonProperty("apiVersion")
@@ -50,6 +56,8 @@ public class Checker {
     }
 
     /**
+     * <p>Getter for the field <code>kind</code>.</p>
+     *
      * @return the kind
      */
     @JsonProperty("kind")
@@ -58,6 +66,8 @@ public class Checker {
     }
 
     /**
+     * <p>Setter for the field <code>kind</code>.</p>
+     *
      * @param kind the kind to set
      */
     @JsonProperty("kind")
@@ -66,6 +76,8 @@ public class Checker {
     }
 
     /**
+     * <p>Getter for the field <code>metadata</code>.</p>
+     *
      * @return the metadata
      */
     @JsonProperty("metadata")
@@ -74,6 +86,8 @@ public class Checker {
     }
 
     /**
+     * <p>Setter for the field <code>metadata</code>.</p>
+     *
      * @param metadata the metadata to set
      */
     @JsonProperty("metadata")
@@ -82,6 +96,8 @@ public class Checker {
     }
 
     /**
+     * <p>Getter for the field <code>spec</code>.</p>
+     *
      * @return the spec
      */
     @JsonProperty("spec")
@@ -90,6 +106,8 @@ public class Checker {
     }
 
     /**
+     * <p>Setter for the field <code>spec</code>.</p>
+     *
      * @param spec the spec to set
      */
     @JsonProperty("spec")

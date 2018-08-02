@@ -13,6 +13,7 @@ import static io.github.kandefromparis.shyrka.ShyrkaLabel.*;
  * backup issues
  *
  * @author csabourdin
+ * @version $Id: $Id
  */
 public enum ConformityIssue {
 
@@ -34,6 +35,13 @@ public enum ConformityIssue {
     /** the purpose is to check for conformity  to test */
     PROJECT_NOT_CONFORME_TO_TEST(31, "PROJECT_NOT_CONFORME_TO_TEST", "The project is not conform to the json test");
 
+    /**
+     * <p>Constructor for ConformityIssue.</p>
+     *
+     * @param errorCode a {@link java.lang.Integer} object.
+     * @param errorMessageCode a {@link java.lang.String} object.
+     * @param errorMessage a {@link java.lang.String} object.
+     */
     ConformityIssue(Integer errorCode, String errorMessageCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
@@ -44,6 +52,8 @@ public enum ConformityIssue {
     private final String errorMessage;
 
     /**
+     * <p>Getter for the field <code>errorCode</code>.</p>
+     *
      * @return the errorCode
      */
     public Integer getErrorCode() {
@@ -51,6 +61,8 @@ public enum ConformityIssue {
     }
 
     /**
+     * <p>Getter for the field <code>errorMessageCode</code>.</p>
+     *
      * @return the errorMessageCode
      */
     public String getErrorMessageCode() {
@@ -58,12 +70,15 @@ public enum ConformityIssue {
     }
 
     /**
+     * <p>Getter for the field <code>errorMessage</code>.</p>
+     *
      * @return the errorMessage
      */
     public String getErrorMessage() {
         return errorMessage;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "" + this.getErrorCode() + "-" + this.getErrorMessageCode() + ":" + this.getErrorMessage();

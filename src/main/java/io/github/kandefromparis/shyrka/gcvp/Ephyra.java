@@ -26,19 +26,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * <p>Ephyra class.</p>
  *
  * @author csabourdin
+ * @version $Id: $Id
  */
 public class Ephyra {
 
     private final Logger logger = LoggerFactory.getLogger(Ephyra.class);
 
+    /**
+     * <p>load.</p>
+     *
+     * @param confPath a {@link java.lang.String} object.
+     * @return a {@link io.vertx.core.json.JsonObject} object.
+     * @throws java.io.IOException if any.
+     */
     public JsonObject load(String confPath) throws IOException {
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
         JsonNode root = mapper.readValue(new File(confPath), JsonNode.class);
         return new JsonObject(root.toString());
     }
 
+    /**
+     * <p>terminateOldPodOpenshift.</p>
+     *
+     * @param conf a {@link io.vertx.core.json.JsonObject} object.
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param namespace a {@link java.lang.String} object.
+     * @param label a {@link java.lang.String} object.
+     * @return a {@link java.lang.Boolean} object.
+     */
     public Boolean terminateOldPodOpenshift(JsonObject conf, OpenShiftClient osClient, String namespace, String label) {
         Iterator<DeploymentConfig> iterator;
         if (StringUtils.isBlank(label)) {
@@ -70,6 +88,15 @@ public class Ephyra {
         return Boolean.TRUE;
     }
 
+    /**
+     * <p>terminateOldPod.</p>
+     *
+     * @param conf a {@link io.vertx.core.json.JsonObject} object.
+     * @param osClient a {@link io.fabric8.kubernetes.client.KubernetesClient} object.
+     * @param namespace a {@link java.lang.String} object.
+     * @param label a {@link java.lang.String} object.
+     * @return a {@link java.lang.Boolean} object.
+     */
     public Boolean terminateOldPod(JsonObject conf, KubernetesClient osClient, String namespace, String label) {
         Iterator<Deployment> iterator;
         if (StringUtils.isBlank(label)) {

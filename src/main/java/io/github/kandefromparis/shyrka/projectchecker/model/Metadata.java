@@ -10,6 +10,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * <p>Metadata class.</p>
+ *
+ * @author csabourdin
+ * @version $Id: $Id
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "name",
@@ -32,10 +38,10 @@ public class Metadata {
     private Map<String, String> annotations;
    
     /**
-     * The Name Schema 
+     * The Name Schema
      * <p>
-     * 
-     * 
+     *
+     * @return a {@link java.lang.String} object.
      */
     @JsonProperty("name")
     public java.lang.String getName() {
@@ -43,36 +49,57 @@ public class Metadata {
     }
 
     /**
-     * The Name Schema 
+     * The Name Schema
      * <p>
-     * 
-     * 
+     *
+     * @param name a {@link java.lang.String} object.
      */
     @JsonProperty("name")
     public void setName(java.lang.String name) {
         this.name = name;
     }
 
+    /**
+     * <p>Getter for the field <code>labels</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     @JsonProperty("labels")
     public Map<String, String> getLabels() {
         return labels;
     }
 
+    /**
+     * <p>Setter for the field <code>labels</code>.</p>
+     *
+     * @param labels a {@link java.util.Map} object.
+     */
     @JsonProperty("labels")
     public void setLabels(Map<String, String> labels) {
         this.labels = labels;
     }
 
+    /**
+     * <p>Getter for the field <code>annotations</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     @JsonProperty("annotations")
     public Map<String, String> getAnnotations() {
         return annotations;
     }
 
+    /**
+     * <p>Setter for the field <code>annotations</code>.</p>
+     *
+     * @param annotations a {@link java.util.Map} object.
+     */
     @JsonProperty("annotations")
     public void setAnnotations(Map<String, String> annotations) {
         this.annotations = annotations;
     }
 
+    /** {@inheritDoc} */
     @Override
     public java.lang.String toString() {
         StringBuilder sb = new StringBuilder();
@@ -100,6 +127,7 @@ public class Metadata {
         return sb.toString();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int result = 1;
@@ -109,6 +137,7 @@ public class Metadata {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object other) {
         if (other == this) {

@@ -26,8 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * <p>DumpProject class.</p>
  *
  * @author csabourdin
+ * @version $Id: $Id
  */
 public class DumpProject {
 
@@ -59,6 +61,16 @@ public class DumpProject {
 
     }
 
+    /**
+     * <p>dumpDeploy.</p>
+     *
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param NS a {@link java.lang.String} object.
+     * @param dir a {@link java.io.File} object.
+     * @param outPutFormat a {@link java.lang.String} object.
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
+     */
     public Boolean dumpDeploy(OpenShiftClient osClient, String NS, File dir, String outPutFormat) throws IOException {
         ListIterator<Deployment> lst = osClient.apps().deployments().inNamespace(NS).list().getItems().listIterator();
         ObjectMapper mapper = new ObjectMapper();
@@ -71,6 +83,16 @@ public class DumpProject {
         return Boolean.TRUE;
     }
 
+    /**
+     * <p>dumpConfigmap.</p>
+     *
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param NS a {@link java.lang.String} object.
+     * @param dir a {@link java.io.File} object.
+     * @param outPutFormat a {@link java.lang.String} object.
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
+     */
     public Boolean dumpConfigmap(OpenShiftClient osClient, String NS, File dir, String outPutFormat) throws IOException {
         ListIterator<ConfigMap> lst = osClient.configMaps().inNamespace(NS).list().getItems().listIterator();
         ObjectMapper mapper = new ObjectMapper();
@@ -81,10 +103,31 @@ public class DumpProject {
         return Boolean.TRUE;
     }
 
+    /**
+     * <p>dumpSecret.</p>
+     *
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param NS a {@link java.lang.String} object.
+     * @param dir a {@link java.io.File} object.
+     * @param outPutFormat a {@link java.lang.String} object.
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
+     */
     public Boolean dumpSecret(OpenShiftClient osClient, String NS, File dir, String outPutFormat) throws IOException {
         return this.dumpSecret(osClient, NS, dir, null);
     }
 
+    /**
+     * <p>dumpSecret.</p>
+     *
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param NS a {@link java.lang.String} object.
+     * @param dir a {@link java.io.File} object.
+     * @param outPutFormat a {@link java.lang.String} object.
+     * @param encode an array of char.
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
+     */
     public Boolean dumpSecret(OpenShiftClient osClient, String NS, File dir, String outPutFormat, char[] encode) throws IOException {
         ListIterator<Secret> lst = osClient.secrets().inNamespace(NS).list().getItems().listIterator();
         ObjectMapper mapper = new ObjectMapper();
@@ -96,6 +139,16 @@ public class DumpProject {
         return Boolean.TRUE;
     }
 
+    /**
+     * <p>dumpService.</p>
+     *
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param NS a {@link java.lang.String} object.
+     * @param dir a {@link java.io.File} object.
+     * @param outPutFormat a {@link java.lang.String} object.
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
+     */
     public Boolean dumpService(OpenShiftClient osClient, String NS, File dir, String outPutFormat) throws IOException {
         ListIterator<Service> lst = osClient.services().inNamespace(NS).list().getItems().listIterator();
         ObjectMapper mapper = new ObjectMapper();
@@ -108,6 +161,16 @@ public class DumpProject {
         return Boolean.TRUE;
     }
 
+    /**
+     * <p>dumpJson.</p>
+     *
+     * @param jso a {@link io.fabric8.kubernetes.api.model.HasMetadata} object.
+     * @param type a {@link java.lang.String} object.
+     * @param name a {@link java.lang.String} object.
+     * @param dir a {@link java.io.File} object.
+     * @param outPutFormat a {@link java.lang.String} object.
+     * @throws java.io.IOException if any.
+     */
     public void dumpJson(HasMetadata jso, String type, String name, File dir, String outPutFormat) throws IOException {
 
         this.cleanForExport(jso);

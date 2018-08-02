@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
  * https://github.com/json-path/JsonPath
  *
  * @author csabourdin
+ * @version $Id: $Id
  */
 public class CaiusPupus {
 
@@ -54,13 +55,14 @@ public class CaiusPupus {
     private JsonObject fullRepport = new JsonObject();
 
     /**
+     * <p>validateQuery.</p>
      *
-     * @param osClient
-     * @param nameSpace
-     * @param ressourcetype
-     * @param labels
-     * @param query
-     * @return
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param nameSpace a {@link java.lang.String} object.
+     * @param ressourcetype a {@link java.lang.String} object.
+     * @param labels a {@link java.util.Map} object.
+     * @param query an array of {@link java.lang.String} objects.
+     * @return a {@link java.lang.Boolean} object.
      */
     public Boolean validateQuery(OpenShiftClient osClient, String nameSpace, String ressourcetype, Map<String, String> labels, String[] query) {
         switch (ressourcetype) {
@@ -253,9 +255,9 @@ public class CaiusPupus {
     /**
      * This Method will load the CauisPupus configuration file
      *
-     * @param confPath
-     * @return
-     * @throws IOException
+     * @param confPath a {@link java.lang.String} object.
+     * @throws java.io.IOException if any.
+     * @return a {@link io.github.kandefromparis.shyrka.projectchecker.model.Checker} object.
      */
     public Checker load(String confPath) throws IOException {
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
@@ -263,14 +265,38 @@ public class CaiusPupus {
         return obj;
     }
 
+    /**
+     * <p>audit.</p>
+     *
+     * @param conf a {@link io.github.kandefromparis.shyrka.projectchecker.model.Checker} object.
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @return a {@link io.vertx.core.json.JsonObject} object.
+     */
     public JsonObject audit(Checker conf, OpenShiftClient osClient) {
         return auditForLabel(conf, osClient, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
+    /**
+     * <p>audit.</p>
+     *
+     * @param conf a {@link io.github.kandefromparis.shyrka.projectchecker.model.Checker} object.
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param namespace a {@link java.lang.String} object.
+     * @return a {@link io.vertx.core.json.JsonObject} object.
+     */
     public JsonObject audit(Checker conf, OpenShiftClient osClient, String namespace) {
         return auditForLabel(conf, osClient, namespace, StringUtils.EMPTY);
     }
 
+    /**
+     * <p>auditForLabel.</p>
+     *
+     * @param conf a {@link io.github.kandefromparis.shyrka.projectchecker.model.Checker} object.
+     * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
+     * @param namespace a {@link java.lang.String} object.
+     * @param caiusLabel a {@link java.lang.String} object.
+     * @return a {@link io.vertx.core.json.JsonObject} object.
+     */
     public JsonObject auditForLabel(Checker conf, OpenShiftClient osClient, String namespace, String caiusLabel) {
         List<Check> checkArray = conf.getSpec().getChecks();
 
@@ -348,6 +374,11 @@ public class CaiusPupus {
         return fullRepport;
     }
 
+    /**
+     * <p>jsonResult.</p>
+     *
+     * @return a {@link io.vertx.core.json.JsonObject} object.
+     */
     public JsonObject
             jsonResult() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
