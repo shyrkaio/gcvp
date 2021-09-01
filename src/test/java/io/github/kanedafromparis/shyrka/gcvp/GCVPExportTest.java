@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -79,7 +80,7 @@ public class GCVPExportTest {
     public void testGCVPGetConfigMap() throws Exception {
         Map<String, String> labels = new HashMap<>();
         labels.put(L_PROJECT_NAME.getlabel(), "sample");
-        String ackDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), 10));
+        String ackDate = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), 10));
         labels.put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), ackDate);
 
         ConfigMap map = new ConfigMapBuilder().withNewMetadata().withNamespace(NS).withName("shyrka").withLabels(labels).endMetadata().build();

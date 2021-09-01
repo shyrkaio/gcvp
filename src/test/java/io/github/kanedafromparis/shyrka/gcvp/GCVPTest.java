@@ -9,16 +9,12 @@ import io.github.kanedafromparis.shyrka.gcvp.GCVP;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.api.model.Node;
-import io.fabric8.kubernetes.api.model.NodeSpec;
-import io.fabric8.kubernetes.api.model.ObjectMeta;
-import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
 import io.fabric8.kubernetes.client.dsl.RollableScalableResource;
-import io.fabric8.kubernetes.client.dsl.ScalableResource;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
@@ -89,12 +86,12 @@ public class GCVPTest {
         kbeServer.getClient().apps().deployments().inNamespace(NS).create(this.getDeploy(NS, "2018-01-01", "true", "dev", 1));
         ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, "2018-01-01", "true", "dev", 1));
 
-        String pprodDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 1));
+        String pprodDate = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 1));
 
         kbeServer.getClient().apps().deployments().inNamespace(NS).create(this.getDeploy(NS, pprodDate, "true", "pprod", 1));
         ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, pprodDate, "true", "pprod", 1));
 
-        String prodDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 6));
+        String prodDate = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 6));
 
         kbeServer.getClient().apps().deployments().inNamespace(NS).create(this.getDeploy(NS, prodDate, "true", "prod", 1));
         ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, prodDate, "true", "prod", 1));
@@ -262,7 +259,7 @@ public class GCVPTest {
 
         Map<String, String> labels = new HashMap<>();
         labels.put(L_PROJECT_NAME.getlabel(), "sample");
-        String ackDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), 10));
+        String ackDate = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), 10));
         labels.put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), ackDate);
 
         ConfigMap map = new ConfigMapBuilder().withNewMetadata().withNamespace(NS).withName("shyrka").withLabels(labels).endMetadata().build();
@@ -286,7 +283,7 @@ public class GCVPTest {
         Map<String, String> labels = new HashMap<>();
         labels.put(L_PROJECT_NAME.getlabel(), "sample");
         labels.put(L_PRODUCT_OWNER.getlabel(), "john.doe");
-        String ackDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), -39));
+        String ackDate = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), -39));
         labels.put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), ackDate);
 
         //Map<String, String> annotations = new HashMap<>();
@@ -312,7 +309,7 @@ public class GCVPTest {
         Map<String, String> labels = new HashMap<>();
         labels.put(L_PROJECT_NAME.getlabel(), "sample");
         labels.put(L_PRODUCT_OWNER.getlabel(), "john.doe");
-        String ackDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), -65));
+        String ackDate = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(DateUtils.addDays(Calendar.getInstance().getTime(), -65));
         labels.put(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel(), ackDate);
 
         Map<String, String> annotations = new HashMap<>();
