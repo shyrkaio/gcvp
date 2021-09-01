@@ -1,16 +1,17 @@
 #
 # @Todo define a specific node
-# oc create sa podkiller
-# oc policy add-role-to-user edit system:serviceaccount:$(oc project -q):podkiller
+# oc create sa caius
+# NS=$(oc project -q)
+# oc policy add-role-to-user view system:serviceaccount:${NS}:caius
 #
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: gcvp-ephyra
+  name: gcvp-caius
   labels:
-    app: gcvp-ephyra
-    io.shyrka.erebus.tooling-info/role: pod-killer
+    app: gcvp-caius
+    io.shyrka.erebus.tooling-info/role: audit
 spec:
   parallelism: 1
   completions: 1
@@ -18,17 +19,17 @@ spec:
   template:
     spec:
       metadata:
-      name: gcvp-ephyra
+      name: gcvp-caiuspupus
       labels:
-        app: gcvp-ephyra
+        app: gcvp-caiuspupus
       restartPolicy: Never
-      serviceAccount: podkiller
+      serviceAccount: caius
       containers:
         - name: gcvp
           image: 172.30.1.1:5000/infra-anacreon-dev-ags-fr/gcvp:0.0.3
           imagePullPolicy: Always
           command: ["java"]
-          args: ["-jar","gcvp-0.0.3.jar","-ephyra","-ephyraNS",$(KUBERNETES_NAMESPACE),"-o", "-ephyraLabels" , $(DEPLOYMENT_LABEL) ]
+          args: ["-jar","gcvp-0.0.3.jar","-caius","-caiusNS",$(KUBERNETES_NAMESPACE),"-o", "-caiusLabels" , $(DEPLOYMENT_LABEL) ]
           env:
             - name: KUBERNETES_NAMESPACE
               valueFrom:
@@ -40,7 +41,7 @@ spec:
           resources:
             limits:
               memory: 1Gi
-              cpu: 1000m
+              cpu: 500m
             requests:
               memory: 100Mi
-              cpu: 250m
+              cpu: 500m

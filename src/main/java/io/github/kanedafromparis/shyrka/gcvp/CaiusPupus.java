@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.kandefromparis.shyrka.gcvp;
+package io.github.kanedafromparis.shyrka.gcvp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,10 +22,10 @@ import io.fabric8.openshift.api.model.BuildConfigList;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.api.model.DeploymentConfigList;
 import io.fabric8.openshift.client.OpenShiftClient;
-import io.github.kandefromparis.shyrka.ShyrkaLabel;
-import io.github.kandefromparis.shyrka.projectchecker.model.Check;
-import io.github.kandefromparis.shyrka.projectchecker.model.Checker;
-import io.github.kandefromparis.shyrka.projectchecker.model.Query;
+import io.github.kanedafromparis.shyrka.ShyrkaLabel;
+import io.github.kanedafromparis.shyrka.projectchecker.model.Check;
+import io.github.kanedafromparis.shyrka.projectchecker.model.Checker;
+import io.github.kanedafromparis.shyrka.projectchecker.model.Query;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * https://github.com/json-path/JsonPath
+ * the name came from this cartoon https://fr.wikipedia.org/wiki/Liste_de_personnages_d%27Ast%C3%A9rix#Caius_Pupus
  *
  * @author csabourdin
  * @version $Id: $Id
@@ -82,14 +82,7 @@ public class CaiusPupus {
                         try {
                             JsonObject jso = new JsonObject(mapper.writeValueAsString(next));
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.WARNING, jso.toString());
-                            ReadContext ctx = JsonPath.parse(jso.toString());
-                            for (String query1 : query) {
-                                List<Map<String, Object>> spec = ctx.read(query1);
-                                if ((spec.size() >= 1) == Boolean.FALSE) {
-                                    return Boolean.FALSE;
-                                }
-                            }
-                            return Boolean.TRUE;
+                            return checkJSonPathQuery(jso, query);
                         } catch (JsonProcessingException ex) {
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
                             return Boolean.FALSE;
@@ -113,15 +106,7 @@ public class CaiusPupus {
                         try {
                             JsonObject jso = new JsonObject(mapper.writeValueAsString(next));
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.WARNING, jso.toString());
-                            ReadContext ctx = JsonPath.parse(jso.toString());
-
-                            for (String query1 : query) {
-                                List<Map<String, Object>> spec = ctx.read(query1);
-                                if ((spec.size() >= 1) == Boolean.FALSE) {
-                                    return Boolean.FALSE;
-                                }
-                            }
-                            return Boolean.TRUE;
+                            return checkJSonPathQuery(jso, query);
 
                         } catch (JsonProcessingException ex) {
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -146,14 +131,7 @@ public class CaiusPupus {
                         try {
                             JsonObject jso = new JsonObject(mapper.writeValueAsString(next));
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.WARNING, jso.toString());
-                            ReadContext ctx = JsonPath.parse(jso.toString());
-                            for (String query1 : query) {
-                                List<Map<String, Object>> spec = ctx.read(query1);
-                                if ((spec.size() >= 1) == Boolean.FALSE) {
-                                    return Boolean.FALSE;
-                                }
-                            }
-                            return Boolean.TRUE;
+                            return checkJSonPathQuery(jso, query);
                         } catch (JsonProcessingException ex) {
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
                             return Boolean.FALSE;
@@ -190,14 +168,7 @@ public class CaiusPupus {
                         try {
                             JsonObject jso = new JsonObject(mapper.writeValueAsString(next));
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.WARNING, jso.toString());
-                            ReadContext ctx = JsonPath.parse(jso.toString());
-                            for (String query1 : query) {
-                                List<Map<String, Object>> spec = ctx.read(query1);
-                                if ((spec.size() >= 1) == Boolean.FALSE) {
-                                    return Boolean.FALSE;
-                                }
-                            }
-                            return Boolean.TRUE;
+                            return checkJSonPathQuery(jso, query);
                         } catch (JsonProcessingException ex) {
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
                             return Boolean.FALSE;
@@ -221,14 +192,7 @@ public class CaiusPupus {
                         try {
                             JsonObject jso = new JsonObject(mapper.writeValueAsString(next));
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.WARNING, jso.toString());
-                            ReadContext ctx = JsonPath.parse(jso.toString());
-                            for (String query1 : query) {
-                                List<Map<String, Object>> spec = ctx.read(query1);
-                                if ((spec.size() >= 1) == Boolean.FALSE) {
-                                    return Boolean.FALSE;
-                                }
-                            }
-                            return Boolean.TRUE;
+                            return checkJSonPathQuery(jso, query);
                         } catch (JsonProcessingException ex) {
                             java.util.logging.Logger.getLogger(CaiusPupus.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
                             return Boolean.FALSE;
@@ -251,13 +215,30 @@ public class CaiusPupus {
 
         //return Boolean.FALSE;
     }
+    /**
+     * 
+     * @param jso
+     * @param query
+     * @return 
+     */
+    //FIXME : might be a bettre way to handle this.
+    public Boolean checkJSonPathQuery(JsonObject jso, String[] query) {
+        ReadContext ctx = JsonPath.parse(jso.toString());
+        for (String query1 : query) {
+            List<Map<String, Object>> spec = ctx.read(query1);
+            if ((spec.size() >= 1) == Boolean.FALSE) {
+                return Boolean.FALSE;
+            }
+        }
+        return Boolean.TRUE;
+    }
 
     /**
      * This Method will load the CauisPupus configuration file
      *
      * @param confPath a {@link java.lang.String} object.
      * @throws java.io.IOException if any.
-     * @return a {@link io.github.kandefromparis.shyrka.projectchecker.model.Checker} object.
+     * @return a {@link io.github.kanedafromparis.shyrka.projectchecker.model.Checker} object.
      */
     public Checker load(String confPath) throws IOException {
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
@@ -268,7 +249,7 @@ public class CaiusPupus {
     /**
      * <p>audit.</p>
      *
-     * @param conf a {@link io.github.kandefromparis.shyrka.projectchecker.model.Checker} object.
+     * @param conf a {@link io.github.kanedafromparis.shyrka.projectchecker.model.Checker} object.
      * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
      * @return a {@link io.vertx.core.json.JsonObject} object.
      */
@@ -279,7 +260,7 @@ public class CaiusPupus {
     /**
      * <p>audit.</p>
      *
-     * @param conf a {@link io.github.kandefromparis.shyrka.projectchecker.model.Checker} object.
+     * @param conf a {@link io.github.kanedafromparis.shyrka.projectchecker.model.Checker} object.
      * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
      * @param namespace a {@link java.lang.String} object.
      * @return a {@link io.vertx.core.json.JsonObject} object.
@@ -291,7 +272,7 @@ public class CaiusPupus {
     /**
      * <p>auditForLabel.</p>
      *
-     * @param conf a {@link io.github.kandefromparis.shyrka.projectchecker.model.Checker} object.
+     * @param conf a {@link io.github.kanedafromparis.shyrka.projectchecker.model.Checker} object.
      * @param osClient a {@link io.fabric8.openshift.client.OpenShiftClient} object.
      * @param namespace a {@link java.lang.String} object.
      * @param caiusLabel a {@link java.lang.String} object.

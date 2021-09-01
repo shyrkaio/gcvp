@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.kandefromparis.shyrka.gcvp;
+package io.github.kanedafromparis.shyrka.gcvp;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,7 +66,7 @@ public class Ephyra {
         } else {
             String key = StringUtils.split(label, "=")[0];
             String value = StringUtils.split(label, "=")[1];
-            logger.warn("Filter on Label in working only with one label. we use '" + key + "=" + value+"'");
+            logger.warn("Filter on Label is working only with one label. we use '" + key + "=" + value+"'");
             iterator = osClient.deploymentConfigs().inNamespace(namespace)
                     .withLabel(key, value)
                     .list().getItems()
@@ -75,8 +75,13 @@ public class Ephyra {
         }
         while (iterator.hasNext()) {
             DeploymentConfig dc = iterator.next();
-            logger.info("dc : " + dc.getMetadata().getName());
-            if (dc.getSpec().getReplicas() > 0) {
+            if (dc != null &&
+                    dc.getMetadata() != null &&
+                    dc.getMetadata().getName() != null &&
+                    dc.getSpec() != null &&
+                    dc.getSpec().getReplicas() != null &&
+                    dc.getSpec().getReplicas() > 0) {
+                logger.info("dc : " + dc.getMetadata().getName());
                 Map<String, String> labels = new HashMap<>();
                 labels.put("deploymentconfig", dc.getMetadata().getName());
                 //This unfortunalty do not works with Mock

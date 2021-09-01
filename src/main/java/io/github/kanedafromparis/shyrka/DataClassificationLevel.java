@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.kandefromparis.shyrka;
+package io.github.kanedafromparis.shyrka;
 
-import static io.github.kandefromparis.shyrka.ShyrkaLabel.*;
+import static io.github.kanedafromparis.shyrka.ShyrkaLabel.*;
 
 /**
  * This Enum contains the possible Security Data level of a Shyrka Project With

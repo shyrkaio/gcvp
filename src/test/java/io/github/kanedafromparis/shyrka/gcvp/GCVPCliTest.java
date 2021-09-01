@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.kandefromparis.shyrka.gcvp;
+package io.github.kanedafromparis.shyrka.gcvp;
 
+import io.github.kanedafromparis.shyrka.gcvp.GCVP;
 import java.io.IOException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

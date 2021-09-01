@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.kandefromparis.shyrka.gcvp;
+package io.github.kanedafromparis.shyrka.gcvp;
 
+import io.github.kanedafromparis.shyrka.gcvp.Ephyra;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.client.NamespacedOpenShiftClient;
 import io.fabric8.openshift.client.server.mock.OpenShiftServer;
@@ -36,7 +37,7 @@ public class EphyraTest {
     private final Logger logger = LoggerFactory.getLogger(CaiusPupusTest.class);
 
     @Rule
-    public OpenShiftServer ocpServer = new OpenShiftServer(true, true);
+    public OpenShiftServer ocpServer;
     JsonObject conf = new JsonObject().put("maxDuration", 2);
 
     Utils tools = new Utils();
@@ -52,8 +53,9 @@ public class EphyraTest {
 
     @Before
     public void setUp() {
-
-        this.ocpServer = tools.createFakeServer(ocpServer, NS);
+        this.ocpServer = new OpenShiftServer(true, true);
+        this.ocpServer.before();
+        this.ocpServer = tools.createFakeServer(this.ocpServer, NS);
 
     }
 

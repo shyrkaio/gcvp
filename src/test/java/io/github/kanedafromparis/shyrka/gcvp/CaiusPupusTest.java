@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.kandefromparis.shyrka.gcvp;
+package io.github.kanedafromparis.shyrka.gcvp;
 
+import io.github.kanedafromparis.shyrka.gcvp.CaiusPupus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.InvalidPathException;
@@ -14,8 +15,8 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentList;
 import io.fabric8.openshift.client.NamespacedOpenShiftClient;
 import io.fabric8.openshift.client.server.mock.OpenShiftServer;
-import static io.github.kandefromparis.shyrka.ShyrkaLabel.L_PROJECT_STAGE;
-import io.github.kandefromparis.shyrka.projectchecker.model.Checker;
+import static io.github.kanedafromparis.shyrka.ShyrkaLabel.L_PROJECT_STAGE;
+import io.github.kanedafromparis.shyrka.projectchecker.model.Checker;
 import io.vertx.core.json.JsonObject;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public class CaiusPupusTest {
     private final Logger logger = LoggerFactory.getLogger(CaiusPupusTest.class);
 
     @Rule
-    public OpenShiftServer ocpServer = new OpenShiftServer(true, true);
+    public OpenShiftServer ocpServer;
 
     Utils tools = new Utils();
     final String NS = "groumphfs";
@@ -63,7 +64,8 @@ public class CaiusPupusTest {
 
     @Before
     public void setUp() {
-
+        this.ocpServer = new OpenShiftServer(true, true);
+        this.ocpServer.before();
         this.ocpServer = tools.createFakeServer(ocpServer, NS);
 
     }

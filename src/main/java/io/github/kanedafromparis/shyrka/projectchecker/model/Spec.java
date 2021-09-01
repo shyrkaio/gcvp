@@ -1,5 +1,5 @@
 
-package io.github.kandefromparis.shyrka.projectchecker.model;
+package io.github.kanedafromparis.shyrka.projectchecker.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

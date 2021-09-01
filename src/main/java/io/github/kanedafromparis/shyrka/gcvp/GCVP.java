@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.kandefromparis.shyrka.gcvp;
+package io.github.kanedafromparis.shyrka.gcvp;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -12,16 +12,16 @@ import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
-import io.github.kandefromparis.shyrka.ConformityIssue;
-import static io.github.kandefromparis.shyrka.ConformityIssue.*;
-import static io.github.kandefromparis.shyrka.ConformityIssue.NO_PROJECT_OWNER_CONFIRMATION;
-import static io.github.kandefromparis.shyrka.ConformityIssue.NO_PROJECT_OWNER_LABEL;
-import static io.github.kandefromparis.shyrka.ConformityIssue.NO_SHYRKA_CONFIGMAP;
-import io.github.kandefromparis.shyrka.DumpProject;
-import static io.github.kandefromparis.shyrka.ShyrkaLabel.*;
-import io.github.kandefromparis.shyrka.projectchecker.model.Checker;
-import io.github.kandefromparis.shyrka.gcvp.Ephyra;
-import io.github.kandefromparis.shyrka.gcvp.CaiusPupus;
+import io.github.kanedafromparis.shyrka.ConformityIssue;
+import static io.github.kanedafromparis.shyrka.ConformityIssue.*;
+import static io.github.kanedafromparis.shyrka.ConformityIssue.NO_PROJECT_OWNER_CONFIRMATION;
+import static io.github.kanedafromparis.shyrka.ConformityIssue.NO_PROJECT_OWNER_LABEL;
+import static io.github.kanedafromparis.shyrka.ConformityIssue.NO_SHYRKA_CONFIGMAP;
+import io.github.kanedafromparis.shyrka.DumpProject;
+import static io.github.kanedafromparis.shyrka.ShyrkaLabel.*;
+import io.github.kanedafromparis.shyrka.projectchecker.model.Checker;
+import io.github.kanedafromparis.shyrka.gcvp.Ephyra;
+import io.github.kanedafromparis.shyrka.gcvp.CaiusPupus;
 import io.vertx.core.json.JsonObject;
 import java.io.File;
 import java.io.IOException;

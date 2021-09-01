@@ -1,3 +1,5 @@
+#Query use https://github.com/json-path/JsonPath
+---
 apiVersion: erebus.shyrka.io/v1beta1
 kind: ProjectChecker
 metadata:
@@ -6,6 +8,7 @@ metadata:
       io.shyrka.erebus/checker: 0.0.1
     annotations:
       io.shyrka.erebus/product.owner.email: john.doe@yopmail.com
+      io.shyrka.erebus/checker.version: 1
 spec:
     checks:
       - namespace: test
@@ -41,7 +44,7 @@ spec:
           io.shyrka.erebus/pjt-stage: test
         weight: 10
         queries:
-          # validate image source
+          # validate env variable
           - query : "$.spec.template.spec.containers[*].env[*].[?((@.name == 'NAME0') && (@.value == 'VALUE0'))]"
             weight: 10
             expectedResult: "true" 

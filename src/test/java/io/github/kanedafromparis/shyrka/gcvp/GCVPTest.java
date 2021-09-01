@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.github.kandefromparis.shyrka.gcvp;
+package io.github.kanedafromparis.shyrka.gcvp;
 
+import io.github.kanedafromparis.shyrka.gcvp.GCVP;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.api.model.Node;
@@ -33,9 +34,9 @@ import io.fabric8.openshift.api.model.DeploymentConfigList;
 import io.fabric8.openshift.api.model.DoneableDeploymentConfig;
 import io.fabric8.openshift.client.NamespacedOpenShiftClient;
 import io.fabric8.openshift.client.dsl.DeployableScalableResource;
-import io.github.kandefromparis.shyrka.ConformityIssue;
-import static io.github.kandefromparis.shyrka.ConformityIssue.*;
-import static io.github.kandefromparis.shyrka.ShyrkaLabel.*;
+import io.github.kanedafromparis.shyrka.ConformityIssue;
+import static io.github.kanedafromparis.shyrka.ConformityIssue.*;
+import static io.github.kanedafromparis.shyrka.ShyrkaLabel.*;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
