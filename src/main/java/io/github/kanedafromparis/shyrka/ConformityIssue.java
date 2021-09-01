@@ -19,7 +19,7 @@ public enum ConformityIssue {
 
     //@Todo have a smart code organisation
     NO_SHYRKA_CONFIGMAP(01, "MISSING_SHYRKA_CONFIGMAP", "The project need a shyrka confimap"),
-    PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT_WRONG_FORMAT(02, "PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT_WRONG_FORMAT", "The annotation for " + L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT+" is in a wrong format, please use ISO_DATE_FORMAT: \"yyyy-MM-dd\" "),
+    PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT_WRONG_FORMAT(02, "PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT_WRONG_FORMAT", "The annotation for " + L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT+" is in a wrong format, please use ISO_8601_EXTENDED_DATE_FORMAT: \"yyyy-MM-dd\" "),
     PROJECT_OWNER_ANNOTATION_WRONG_FORMAT(03, "PROJECT_OWNER_ANNOTATION_WRONG_FORMAT", "The annotation for " + A_PRODUCT_OWNER+ " is in a wrong format"),
     
     NO_PROJECT_OWNER_LABEL(11, "MISSING_PROJECT_OWNER_LABEL", "The project need a shyrka confimap, with label " + L_PRODUCT_OWNER),

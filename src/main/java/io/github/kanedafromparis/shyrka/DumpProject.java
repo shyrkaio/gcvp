@@ -54,9 +54,10 @@ public class DumpProject {
         metadata.setUid(StringUtils.EMPTY);
 
         Map<String, String> annotations = metadata.getAnnotations();
-        annotations.remove("deployment.kubernetes.io/revision");
-        annotations.remove("kubectl.kubernetes.io/last-applied-configuration");
-
+        if(annotations !=null){
+            annotations.remove("deployment.kubernetes.io/revision");
+            annotations.remove("kubectl.kubernetes.io/last-applied-configuration");
+        }
         return next;
 
     }

@@ -39,6 +39,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT;
 import org.json.JSONException;
 
 import org.slf4j.Logger;
@@ -405,7 +406,7 @@ public class GCVP {
                         .getLabels()
                         .containsKey(L_END_DATE.getlabel())) {
                     Date now = Calendar.getInstance().getTime();
-                    Date limit = DateFormatUtils.ISO_DATE_FORMAT
+                    Date limit = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT
                             .parse(next.getMetadata()
                                     .getLabels()
                                     .get(L_END_DATE.getlabel()));
@@ -416,7 +417,7 @@ public class GCVP {
                         this.osClient.deploymentConfigs().inNamespace(next.getMetadata().getNamespace()).createOrReplace(next);
                         return true;
                     } else {
-                        logger.debug("no modification (current [" + DateFormatUtils.ISO_DATE_FORMAT.format(now) + "+]date before " + L_END_DATE.getlabel() + "=" + next.getMetadata().getLabels().get(L_END_DATE.getlabel()) + ") of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
+                        logger.debug("no modification (current [" + DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(now) + "+]date before " + L_END_DATE.getlabel() + "=" + next.getMetadata().getLabels().get(L_END_DATE.getlabel()) + ") of {} : {}", next.getMetadata().getNamespace(), next.getMetadata().getName());
                         return true;
                     }
                 }
@@ -469,7 +470,7 @@ public class GCVP {
                         .getLabels()
                         .containsKey(L_END_DATE.getlabel())) {
                     Date now = Calendar.getInstance().getTime();
-                    Date limit = DateFormatUtils.ISO_DATE_FORMAT
+                    Date limit = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT
                             .parse(next.getMetadata()
                                     .getLabels()
                                     .get(L_END_DATE.getlabel()));
@@ -528,7 +529,10 @@ public class GCVP {
             logger.info("conformity issue {} ", NO_PROJECT_OWNER_LABEL.toString());
             issues.add(NO_PROJECT_OWNER_LABEL);
         }
-        if (!conf.getMetadata().getAnnotations().containsKey(A_PRODUCT_OWNER.getlabel())
+        if (conf.getMetadata().getAnnotations() == null) {
+            logger.info("conformity issue {} ", NO_PROJECT_OWNER_ANNOTATION.toString());
+            issues.add(NO_PROJECT_OWNER_ANNOTATION);
+        }else if (!conf.getMetadata().getAnnotations().containsKey(A_PRODUCT_OWNER.getlabel())
                 || conf.getMetadata().getAnnotations().get(A_PRODUCT_OWNER.getlabel()) == null
                 || conf.getMetadata().getAnnotations().get(A_PRODUCT_OWNER.getlabel()).isEmpty()) {
             logger.info("conformity issue {} ", NO_PROJECT_OWNER_ANNOTATION.toString());
@@ -544,7 +548,7 @@ public class GCVP {
             Date lastValidation;
             Date now = Calendar.getInstance().getTime();
             try {
-                lastValidation = DateFormatUtils.ISO_DATE_FORMAT.parse(conf.getMetadata().getLabels().get(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel()));
+                lastValidation = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.parse(conf.getMetadata().getLabels().get(L_PRODUCT_OWNER_LAST_ACKNOWLEDGEMENT.getlabel()));
                 long difMillis = now.getTime() - lastValidation.getTime();
                 long difDay = difMillis / (60 * 60 * 1000 * 24);
 

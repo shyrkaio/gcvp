@@ -157,7 +157,7 @@ public class CaiusPupusTest {
 
     @Test
     public void testWithJsonPathProbpath() {
-        DeploymentList list = this.ocpServer.getKubernetesClient().extensions().deployments().inNamespace(NS).list();
+        DeploymentList list = this.ocpServer.getKubernetesClient().apps().deployments().inNamespace(NS).list();
         String query = "$.items.[0].spec.template.spec.containers[*].readinessProbe";
         //.items[]?.spec.template.spec.containers[0].readinessProbe
         if (null == list) {
@@ -194,7 +194,7 @@ public class CaiusPupusTest {
 
     @Test
     public void testWithJsonPathProbpath2() {
-        DeploymentList list = this.ocpServer.getKubernetesClient().extensions().deployments().inNamespace(NS).list();
+        DeploymentList list = this.ocpServer.getKubernetesClient().apps().deployments().inNamespace(NS).list();
         String query = "$.items.[0].spec.template.spec.containers[*].readinessProbe";
         //.items[]?.spec.template.spec.containers[0].readinessProbe
         if (null == list) {
@@ -229,7 +229,7 @@ public class CaiusPupusTest {
      */
     @Test
     public void testWithJsonReadinessProbe() {
-        DeploymentList list = this.ocpServer.getKubernetesClient().extensions().deployments().inNamespace(NS).list();
+        DeploymentList list = this.ocpServer.getKubernetesClient().apps().deployments().inNamespace(NS).list();
         String query = "$.items.[0].spec.template.spec.containers[*].readinessProbe";
         //.items[]?.spec.template.spec.containers[0].readinessProbe
         if (null == list) {
@@ -286,7 +286,7 @@ public class CaiusPupusTest {
                 + "/deployments?labelSelector=io.shyrka.erebus/pjt-stage=test")
                 .andReturn(200, tools.getDeploy(NS, "2018-01-01", "true", "test", 1, "foo.server.org/somevalue/someothervalue:1.2", "smooth"));
 
-        DeploymentList list = this.ocpServer.getKubernetesClient().extensions().deployments().inNamespace(NS).list();
+        DeploymentList list = this.ocpServer.getKubernetesClient().apps().deployments().inNamespace(NS).list();
         Iterator<Deployment> iterator = list.getItems().iterator();
         while (iterator.hasNext()) {
             Deployment next = iterator.next();
@@ -361,9 +361,8 @@ public class CaiusPupusTest {
         String confPath = System.getProperty("user.dir") + "/target/test-classes/checker-groumphfs.yaml";
         Checker checkerconf = instance.load(confPath);
 
-        JsonObject expResult = new JsonObject("{\"test\":{\"stack\":\"no-stack\",\"nbOk\":0,\"project\":\"test\",\"nbChecks\":3,\"labels\":{\"io.shyrka.erebus/pjt-stage\":\"test\"}},\"groumphfs\":{\"stack\":\"no-stack\",\"nbOk\":3,\"project\":\"groumphfs\",\"nbChecks\":4,\"labels\":{\"io.shyrka.erebus/pjt-stage\":\"test\"}}}");
+        JsonObject expResult = new JsonObject("{\"test\":{\"stack\":\"no-stack\",\"nbOk\":0,\"project\":\"test\",\"nbChecks\":3,\"labels\":{\"io.shyrka.erebus/pjt-stage\":\"test\"}},\"groumphfs\":{\"stack\":\"no-stack\",\"nbOk\":2,\"project\":\"groumphfs\",\"nbChecks\":4,\"labels\":{\"io.shyrka.erebus/pjt-stage\":\"test\"}}}");
         JsonObject result = instance.audit(checkerconf, this.ocpServer.getOpenshiftClient());
-        //java.lang.AssertionError: expected:<null> but was:<{"test":{"stack":"no-stack","nbOk":0,"project":"test","nbCheck":1,"nbChecks":0,"labels":{"io.shyrka.erebus/pjt-stage":"test"}}}>
         assertEquals(expResult, result);
     }
 
@@ -379,7 +378,7 @@ public class CaiusPupusTest {
         String confPath = System.getProperty("user.dir") + "/target/test-classes/checker-sample.yaml";
         Checker checkerconf = instance.load(confPath);
 
-        JsonObject expResult = new JsonObject("{\"test\":{\"stack\":\"no-stack\",\"nbOk\":0,\"project\":\"test\",\"nbChecks\":3,\"labels\":{\"io.shyrka.erebus/pjt-stage\":\"test\"}}}>");
+        JsonObject expResult = new JsonObject("{\"test\":{\"stack\":\"no-stack\",\"nbOk\":0,\"project\":\"test\",\"nbChecks\":3,\"labels\":{\"io.shyrka.erebus/pjt-stage\":\"test\"}}}");
         String caiusLabel = "";
 
         JsonObject result = instance.auditForLabel(checkerconf, this.ocpServer.getOpenshiftClient(), StringUtils.EMPTY, caiusLabel);
@@ -400,7 +399,7 @@ public class CaiusPupusTest {
         String confPath = System.getProperty("user.dir") + "/target/test-classes/checker-groumphfs.yaml";
         Checker checkerconf = instance.load(confPath);
 
-        JsonObject expResult = new JsonObject("{\"groumphfs\":{\"stack\":\"no-stack\",\"nbOk\":3,\"project\":\"groumphfs\",\"nbChecks\":4,\"labels\":{\"io.shyrka.erebus/pjt-stage\":\"test\"}}}>");
+        JsonObject expResult = new JsonObject("{\"groumphfs\":{\"stack\":\"no-stack\",\"nbOk\":2,\"project\":\"groumphfs\",\"nbChecks\":4,\"labels\":{\"io.shyrka.erebus/pjt-stage\":\"test\"}}}");
         String caiusLabel = "";
 
         JsonObject result = instance.auditForLabel(checkerconf, this.ocpServer.getOpenshiftClient(), NS, caiusLabel);

@@ -15,9 +15,9 @@ import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentList;
-import io.fabric8.kubernetes.api.model.apps.DoneableDeployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.RollableScalableResource;
 import io.fabric8.kubernetes.client.dsl.ScalableResource;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -31,7 +31,6 @@ import io.fabric8.openshift.client.server.mock.OpenShiftServer;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.api.model.DeploymentConfigBuilder;
 import io.fabric8.openshift.api.model.DeploymentConfigList;
-import io.fabric8.openshift.api.model.DoneableDeploymentConfig;
 import io.fabric8.openshift.client.NamespacedOpenShiftClient;
 import io.fabric8.openshift.client.dsl.DeployableScalableResource;
 import io.github.kanedafromparis.shyrka.ConformityIssue;
@@ -184,7 +183,7 @@ public class GCVPTest {
     @org.junit.Test
     public void testScaleDownDeployement() throws Exception {
         KubernetesClient client = kbeServer.getClient();
-        MixedOperation<Deployment, DeploymentList, DoneableDeployment, ScalableResource<Deployment, DoneableDeployment>> deployments = client.apps().deployments();
+        MixedOperation<Deployment, DeploymentList, RollableScalableResource<Deployment>> deployments = client.apps().deployments();
         Iterator<Deployment> iterator = deployments.list().getItems().iterator();
         while (iterator.hasNext()) {
             Deployment next = iterator.next();
@@ -219,7 +218,7 @@ public class GCVPTest {
         NamespacedOpenShiftClient client = ocpServer.getOpenshiftClient().inNamespace(NS);
         //ocpServer.expect().withPath("/api/v1/nodes/node1").andReturn(200, new PodBuilder().build()).once();
         //this.osClient.apps().supportsApiPath("/oapi/v1")
-        MixedOperation<DeploymentConfig, DeploymentConfigList, DoneableDeploymentConfig, DeployableScalableResource<DeploymentConfig, DoneableDeploymentConfig>> deploymentConfigs = client.deploymentConfigs();
+        MixedOperation<DeploymentConfig, DeploymentConfigList, DeployableScalableResource<DeploymentConfig>> deploymentConfigs = client.deploymentConfigs();
         Iterator<DeploymentConfig> iterator = deploymentConfigs.list().getItems().iterator();
         while (iterator.hasNext()) {
             DeploymentConfig next = iterator.next();

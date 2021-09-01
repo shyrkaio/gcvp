@@ -13,7 +13,6 @@ import io.fabric8.kubernetes.api.model.EnvVarBuilder;
 import io.fabric8.kubernetes.api.model.HTTPGetAction;
 import io.fabric8.kubernetes.api.model.HTTPHeader;
 import io.fabric8.kubernetes.api.model.IntOrString;
-import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.NamespaceBuilder;
 import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
@@ -27,14 +26,8 @@ import io.fabric8.kubernetes.api.model.ResourceRequirements;
 import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
-import io.fabric8.kubernetes.client.dsl.LogWatch;
-import io.fabric8.kubernetes.client.dsl.MixedOperation;
-import io.fabric8.openshift.api.model.Build;
-import io.fabric8.openshift.api.model.BuildList;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.api.model.DeploymentConfigBuilder;
-import io.fabric8.openshift.api.model.DoneableBuild;
-import io.fabric8.openshift.client.dsl.BuildResource;
 import io.fabric8.openshift.client.server.mock.OpenShiftServer;
 import static io.github.kanedafromparis.shyrka.ShyrkaLabel.L_END_DATE;
 import static io.github.kanedafromparis.shyrka.ShyrkaLabel.L_PROJECT_STAGE;
@@ -56,14 +49,15 @@ class Utils {
 
     OpenShiftServer createFakeServer(OpenShiftServer ocpServer, String NS) {
         ocpServer.before();
+        
         createDeployement(ocpServer, NS, "2018-01-01", "true", "test", 1, "foo.server.org/somevalue/someothervalue:1.2", "smooth");
         createDeployement(ocpServer, NS, "2018-01-01", "true", "dev", 1, "foo.server.org/somevalue/someothervalue:1.2", "smooth");
 
-        String pprodDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 1));
+        String pprodDate = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 1));
 
         createDeployement(ocpServer, NS, pprodDate, "true", "pprod", 3, "foo.server.org/somevalue/someothervalue:1.2", "smooth");
 
-        String prodDate = DateFormatUtils.ISO_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 6));
+        String prodDate = DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(DateUtils.addMonths(Calendar.getInstance().getTime(), 6));
         createDeployement(ocpServer, NS, prodDate, "true", "prod", 3, "foo.server.org/somevalue/someothervalue:1.1", "smooth");
 
         return ocpServer;
@@ -73,7 +67,7 @@ class Utils {
     private void createDeployement(OpenShiftServer ocpServer, String NS, String lEndDate, String lScaleDown, String lStage, Integer replicas, String image, String name) {
         Deployment deploy = this.getDeploy(NS, lEndDate, lScaleDown, lStage, replicas, image, name);
         
-        ocpServer.getOpenshiftClient().namespaces().create(new NamespaceBuilder().withNewMetadata().withName(NS).and().withNewSpec().endSpec().build());
+        //ocpServer.getOpenshiftClient().namespaces().createOrReplace(new NamespaceBuilder().withNewMetadata().withName(NS).and().withNewSpec().endSpec().build());
         ocpServer.getOpenshiftClient().apps().deployments().inNamespace(NS).create(deploy);
         //
         ocpServer.getOpenshiftClient().deploymentConfigs().inNamespace(NS).create(this.getDC(NS, lEndDate, lScaleDown, lStage, replicas, image, name));

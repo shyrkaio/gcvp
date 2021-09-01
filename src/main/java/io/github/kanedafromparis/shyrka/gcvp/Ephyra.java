@@ -105,14 +105,14 @@ public class Ephyra {
     public Boolean terminateOldPod(JsonObject conf, KubernetesClient osClient, String namespace, String label) {
         Iterator<Deployment> iterator;
         if (StringUtils.isBlank(label)) {
-            iterator = osClient.extensions().deployments().inNamespace(namespace)
+            iterator = osClient.apps().deployments().inNamespace(namespace)
                     .list().getItems()
                     .iterator();
         } else {
             String key = StringUtils.split(label, "=")[0];
             String value = StringUtils.split(label, "=")[1];
             logger.warn("Filter on Label in working only with one label. we use " + key + "=" + value);
-            iterator = osClient.extensions().deployments().inNamespace(namespace)
+            iterator = osClient.apps().deployments().inNamespace(namespace)
                     .withLabel(key, value).list().getItems()
                     .iterator();
 
