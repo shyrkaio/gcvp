@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.kanedafromparis.shyrka</groupId>
     <artifactId>gcvp</artifactId>
-    <version>0.0.9</version>
+    <version>0.0.10</version>
     <packaging>jar</packaging>
     <scm>
         <connection>scm:git:git://github.com/kanedafromparisfriends/gcvp.git</connection>
@@ -16,9 +16,9 @@
         <url>https://github.com/kanedafromparisfriends/gcvp/issues/</url>
     </issueManagement>
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <java.version>1.8</java.version>        
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>11</java.version>        
         <!-- docker.maven.plugin.version>0.23.0</docker.maven.plugin.version -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -372,9 +372,6 @@
                                 <workdir>/opt/${project.artifactId}</workdir>
                                 <env>
                                     <JVM_OPTIONS>-Djava.security.egd=file:/dev/./urandom 
-                                        -XX:+UnlockExperimentalVMOptions 
-                                        -XX:+UseCGroupMemoryLimitForHeap 
-                                        -XX:MaxRAMFraction=2 
                                         -XshowSettings:vm
                                     </JVM_OPTIONS>                                    
                                 </env>
@@ -419,7 +416,7 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration><failOnError>false</failOnError></configuration>
+                <configuration><failOnError>true</failOnError></configuration>
             </plugin>
         </plugins>
     </build>
